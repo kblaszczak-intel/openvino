@@ -11,7 +11,7 @@
    openvino_docs_deployment_optimization_guide_dldt_optimization_guide
    openvino_docs_IE_DG_Device_Plugins
    Direct ONNX Format Support <openvino_docs_IE_DG_ONNX_Support>
-   openvino_docs_IE_DG_Paddle_Support
+   Direct PaddlePaddle Format Support <openvino_docs_IE_DG_Paddle_Support>
    openvino_docs_IE_DG_Int8Inference
    openvino_docs_IE_DG_Bfloat16Inference
    openvino_docs_IE_DG_DynamicBatching
@@ -27,9 +27,9 @@
 @endsphinxdirective
 
 ## Introduction
-Inference Engine is a set of C++ libraries with C and Python bindings providing a common API to deliver inference solutions on the platform of your choice. Use the Inference Engine API to read the Intermediate Representation (IR), ONNX and execute the model on devices.
+Inference Engine is a set of C++ libraries with C and Python bindings providing a common API to deliver inference solutions on the platform of your choice. Use the Inference Engine API to read an Intermediate Representation (IR), ONNX, or PaddlePaddle model and execute it on preferred devices.
 
-Inference Engine uses a plugin architecture. Inference Engine plugin is a software component that contains complete implementation for inference on a certain Intel® hardware device: CPU, GPU, VPU, etc. Each plugin implements the unified API and provides additional hardware-specific APIs.
+Inference Engine uses a plugin architecture. Its plugins are software components that contain complete implementation for inference on a particular Intel® hardware device: CPU, GPU, VPU, etc. Each plugin implements the unified API and provides additional hardware-specific APIs.
  
 The scheme below illustrates the typical workflow for deploying a trained deep learning model: 
 
