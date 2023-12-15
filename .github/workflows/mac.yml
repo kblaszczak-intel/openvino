@@ -225,13 +225,13 @@ jobs:
       #
 
       - name: Download OpenVINO package
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: openvino_package_${{ matrix.arhitecture }}
           path: ${{ env.INSTALL_DIR }}
 
       - name: Download OpenVINO tests package
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: openvino_tests_${{ matrix.arhitecture }}
           path: ${{ env.INSTALL_TEST_DIR }}
@@ -328,13 +328,13 @@ jobs:
       #
 
       - name: Download OpenVINO package
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: openvino_package_${{ matrix.arhitecture }}
           path: ${{ env.INSTALL_DIR }}
 
       - name: Download OpenVINO tests package
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: openvino_tests_${{ matrix.arhitecture }}
           path: ${{ env.INSTALL_TEST_DIR }}
@@ -577,13 +577,13 @@ jobs:
       #
 
       - name: Download OpenVINO package
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: openvino_package_${{ matrix.arhitecture }}
           path: ${{ env.INSTALL_DIR }}
 
       - name: Download OpenVINO tests package
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: openvino_tests_${{ matrix.arhitecture }}
           path: ${{ env.INSTALL_TEST_DIR }}
@@ -803,13 +803,13 @@ jobs:
         run: mkdir -p ${{ env.INSTALL_DIR }} ${{ env.INSTALL_TEST_DIR }}
 
       - name: Download OpenVINO package
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: openvino_package_${{ matrix.arhitecture }}
           path: ${{ env.INSTALL_DIR }}
 
       - name: Download OpenVINO tests package
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: openvino_tests_${{ matrix.arhitecture }}
           path: ${{ env.INSTALL_TEST_DIR }}
