@@ -193,8 +193,8 @@ Key Features
    :hidden:
 
    GET STARTED <get-started>
-   LEARN OPENVINO <learn-openvino>
-   OPENVINO WORKFLOW <openvino-workflow>
-   DOCUMENTATION <documentation>
+   HOW TO USE OPENVINO <openvino-workflow>
+   GENERATIVE AI GUIDE <genai-guide>
+   REFERENCE DOCUMENTATION <documentation>
    OPENVINO ECOSYSTEM <openvino-ecosystem>
    ABOUT OPENVINO <about-openvino>
