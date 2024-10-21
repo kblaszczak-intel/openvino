@@ -574,7 +574,7 @@ Previous 2024 releases
 
    **What's new**
 
-   * More :doc:`Gen AI <../learn-openvino/llm_inference_guide/genai-guide>` coverage and framework
+   * More :doc:`Gen AI <../generative-ai-workflow>` coverage and framework
      integrations to minimize code changes.
 
      * Llama 3 optimizations for CPUs, built-in GPUs, and discrete GPUs for improved performance
@@ -611,7 +611,7 @@ Previous 2024 releases
        * Integration of TorchServe through torch.compile OpenVINO backend for easy model deployment,
          provisioning to multiple instances, model versioning, and maintenance.
 
-     * Preview: addition of the :doc:`Generate API <../learn-openvino/llm_inference_guide/genai-guide>`,
+     * Preview: addition of the :doc:`Generate API <../generative-ai-workflow/genai-guide>`,
        a simplified API for text generation using large language models with only a few lines of
        code. The API is available through the newly launched OpenVINO GenAI package.
      * Support for Intel Atom® Processor X Series. For more details, see :doc:`System Requirements <./release-notes-openvino/system-requirements>`.

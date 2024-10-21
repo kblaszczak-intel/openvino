@@ -11,14 +11,26 @@ Large Language Model Inference Guide
    :maxdepth: 1
    :hidden:
 
-   Run LLMs with Optimum Intel <llm_inference_guide/llm-inference-hf>
-   Run LLMs on OpenVINO GenAI Flavor <llm_inference_guide/genai-guide>
-   Run LLMs on Base OpenVINO <llm_inference_guide/llm-inference-native-ov>
-   OpenVINO Tokenizers <llm_inference_guide/ov-tokenizers>
+   Run LLMs with Optimum Intel <generative-ai-workflow/llm-inference-hf>
+   Run LLMs on OpenVINO GenAI Flavor <generative-ai-workflow/genai-guide>
+   Run LLMs on Base OpenVINO <generative-ai-workflow/llm-inference-native-ov>
+   OpenVINO Tokenizers <generative-ai-workflow/ov-tokenizers>
+
+
+
+This tutorial provides instructions for running Generative AI models using Hugging Face Optimum Intel and Native OpenVINO APIs.
+Detailed information on how OpenVINO accelerates Generative AI use cases and what models it supports.
+
+
+
+
+
+
+
 
 Large Language Models (LLMs) like GPT are transformative deep learning networks capable of a
 broad range of natural language tasks, from text generation to language translation. OpenVINO
-optimizes the deployment of these models, enhancing their performance and integration into
+optimizes deployment of these models, enhancing their performance and integration with
 various applications. This guide shows how to use LLMs with OpenVINO, from model loading and
 conversion to advanced use cases.
 
@@ -85,9 +97,9 @@ and export models to the OpenVINO model format for use in native API application
 
 Proceed to run LLMs with:
 
-* :doc:`Hugging Face and Optimum Intel <./llm_inference_guide/llm-inference-hf>`
-* :doc:`OpenVINO GenAI Flavor <./llm_inference_guide/genai-guide>`
-* :doc:`Native OpenVINO API <./llm_inference_guide/llm-inference-native-ov>`
+* :doc:`Hugging Face and Optimum Intel <./generative-ai-workflow/llm-inference-hf>`
+* :doc:`OpenVINO GenAI Flavor <./generative-ai-workflow/genai-guide>`
+* :doc:`Native OpenVINO API <./generative-ai-workflow/llm-inference-native-ov>`
 
 The table below summarizes the differences between Hugging Face and the native OpenVINO API
 approaches.

@@ -14,8 +14,11 @@ Install OpenVINO™ 2024.4
    OpenVINO Runtime on Linux <install-openvino/install-openvino-linux>
    OpenVINO Runtime on Windows <install-openvino/install-openvino-windows>
    OpenVINO Runtime on macOS <install-openvino/install-openvino-macos>
-   Create an OpenVINO Yocto Image <install-openvino/install-openvino-yocto>
    OpenVINO GenAI Flavor <install-openvino/install-openvino-genai>
+   Additional Hardware Setup <get-started/configurations>
+   Create an OpenVINO Yocto Image <install-openvino/install-openvino-yocto>
+   Troubleshooting <get-started/troubleshooting-install-config>
+
 
 .. raw:: html
 
@@ -55,8 +58,8 @@ All currently supported versions are:
    A new OpenVINO GenAI Flavor streamlines application development by providing
    LLM-specific interfaces for easy integration of language models, handling tokenization and
    text generation. For installation and usage instructions, proceed to
-   :doc:`Install OpenVINO GenAI Flavor <../learn-openvino/llm_inference_guide/genai-guide>` and
-   :doc:`Run LLMs with OpenVINO GenAI Flavor <../learn-openvino/llm_inference_guide/genai-guide>`.
+   :doc:`Install OpenVINO GenAI Flavor <./install-openvino/install-openvino-genai>` and
+   :doc:`Run LLMs with OpenVINO GenAI Flavor <../generative-ai-workflow/genai-guide>`.
 
 .. dropdown:: Deprecation of OpenVINO™ Development Tools Package
 

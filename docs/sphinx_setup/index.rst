@@ -194,6 +194,7 @@ Key Features
 
    GET STARTED <get-started>
    LEARN OPENVINO <learn-openvino>
+   GENERATIVE AI GUIDE <generative-ai-workflow>
    OPENVINO WORKFLOW <openvino-workflow>
    DOCUMENTATION <documentation>
    OPENVINO ECOSYSTEM <openvino-ecosystem>
