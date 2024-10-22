@@ -8,7 +8,7 @@ Configurations for Intel® Processor Graphics (GPU) with OpenVINO™
                  OpenVINO™ toolkit on your system.
 
 
-.. _gpu guide:
+
 
 To use the OpenVINO™ GPU plug-in and transfer the inference to the graphics of the Intel® processor (GPU), the Intel® graphics driver must be properly configured on the system.
 
@@ -77,7 +77,7 @@ Below are the instructions on how to install the OpenCL packages on supported Li
 
          rpm -ivh http://mirror.centos.org/centos/8-stream/AppStream/x86_64/os/Packages/ocl-icd-2.2.12-1.el8.x86_64.rpm
 
-.. _gpu guide windows:
+
 
 Windows
 #######
@@ -89,13 +89,13 @@ To check if the driver has been installed:
 1. Type **device manager** in the **Search Windows** field and press Enter. **Device Manager** will open.
 2. Click the drop-down arrow to display **Display Adapters**. You can see the adapter that is installed in your computer:
 
-   .. image:: ../../assets/images/DeviceManager.PNG
+   .. image:: ../../../assets/images/DeviceManager.PNG
       :width: 400
 
 3. Right-click on the adapter name and select **Properties**.
 4. Click the **Driver** tab to view the driver version.
 
-   .. image:: ../../assets/images/DeviceDriverVersion.svg
+   .. image:: ../../../assets/images/DeviceDriverVersion.svg
       :width: 400
 
 Your device driver has been updated and is now ready to use your GPU.
@@ -130,8 +130,8 @@ Below are the required steps to make it work with OpenVINO:
 Additional Resources
 ####################
 
-* :doc:`GPU Device <../../openvino-workflow/running-inference/inference-devices-and-modes/gpu-device>`
-* :doc:`Install Intel® Distribution of OpenVINO™ toolkit from a Docker Image <../install-openvino/install-openvino-archive-linux>`
+* :doc:`GPU Device <../../../openvino-workflow/running-inference/inference-devices-and-modes/gpu-device>`
+* :doc:`Install Intel® Distribution of OpenVINO™ toolkit from a Docker Image <../install-openvino-archive-linux>`
 * `Docker CI framework for Intel® Distribution of OpenVINO™ toolkit <https://github.com/openvinotoolkit/docker_ci/blob/master/README.md>`__
 * `Get Started with DockerHub CI for Intel® Distribution of OpenVINO™ toolkit <https://github.com/openvinotoolkit/docker_ci/blob/master/get-started.md>`__
 * `Dockerfiles with Intel® Distribution of OpenVINO™ toolkit <https://github.com/openvinotoolkit/docker_ci/blob/master/dockerfiles/README.md>`__

@@ -11,13 +11,13 @@ Install OpenVINO™ 2024.4
    :maxdepth: 3
    :hidden:
 
+   OpenVINO GenAI Flavor <install-openvino/install-openvino-genai>
    OpenVINO Runtime on Linux <install-openvino/install-openvino-linux>
    OpenVINO Runtime on Windows <install-openvino/install-openvino-windows>
    OpenVINO Runtime on macOS <install-openvino/install-openvino-macos>
-   OpenVINO GenAI Flavor <install-openvino/install-openvino-genai>
-   Additional Hardware Setup <get-started/configurations>
+   Additional Hardware Setup <install-openvino/configurations>
    Create an OpenVINO Yocto Image <install-openvino/install-openvino-yocto>
-   Troubleshooting <get-started/troubleshooting-install-config>
+   Troubleshooting <get-started/install-openvino/troubleshooting-install-config>
 
 
 .. raw:: html

@@ -24,8 +24,7 @@ as archives or python wheels), build OpenVINO GenAI library from
 Additional Resources
 #######################
 
-* :doc:`OpenVINO GenAI Installation Guide <../install-openvino/install-openvino-genai>`
+* :doc:`OpenVINO GenAI Installation Guide <../install-openvino-genai>`
 * `OpenVINO GenAI repository <https://github.com/openvinotoolkit/openvino.genai>`__
-* :doc:`OpenVINO Installation Guide <../install-openvino>`
-* :doc:`OpenVINO Tokenizers <../../generative-ai-workflow/ov-tokenizers>`
-
+* :doc:`OpenVINO Installation Guide <../../install-openvino>`
+* :doc:`OpenVINO Tokenizers <../../../generative-ai-workflow/ov-tokenizers>`

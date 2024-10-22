@@ -190,7 +190,7 @@ To verify the package is properly installed, run the command below (this may tak
    mo -h
 
 You will see the help message for ``mo`` if installation finished successfully. If you get an
-error, refer to the :doc:`Troubleshooting Guide <../../get-started/troubleshooting-install-config>`
+error, refer to the :doc:`Troubleshooting Guide <../../get-started/install-openvino/troubleshooting-install-config>`
 for possible solutions.
 
 Congratulations! You finished installing OpenVINO Development Tools with C/C++ capability.

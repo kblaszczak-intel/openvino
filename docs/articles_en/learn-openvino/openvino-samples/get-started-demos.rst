@@ -405,11 +405,16 @@ Examples
 Running Inference on CPU
 ------------------------
 
-The following command shows how to run the Image Classification Code Sample using the `dog.bmp <https://storage.openvinotoolkit.org/data/test_data/images/224x224/dog.bmp>`__ file as an input image, the model in IR format from the ``ir`` directory, and the CPU as the target hardware:
+The following command shows how to run the Image Classification Code Sample using the
+`dog.bmp <https://storage.openvinotoolkit.org/data/test_data/images/224x224/dog.bmp>`__
+file as an input image, the model in IR format from the ``ir`` directory, and the CPU as the
+target hardware:
 
 .. note::
 
-   * Running inference on Intel® Processor Graphics (GPU) requires :doc:`additional hardware configuration steps <../../get-started/configurations/configurations-intel-gpu>`, as described earlier on this page.
+   * Running inference on Intel® Processor Graphics (GPU) requires
+     :doc:`additional hardware configuration steps <../../get-started/install-openvino/configurations/configurations-intel-gpu>`,
+     as described earlier on this page.
    * Running on GPU is not compatible with macOS.
 
 .. tab-set::
