@@ -110,7 +110,7 @@ jobs:
           apt install --assume-yes --no-install-recommends default-jdk
 
       - name: Install sccache
-        uses: mozilla-actions/sccache-action@v0.0.3
+        uses: mozilla-actions/sccache-action@v0.0.7
         with:
           version: "v0.5.4"
 
@@ -599,7 +599,7 @@ jobs:
         run: bash ${OPENVINO_REPO}/install_build_dependencies.sh
 
       - name: Install sccache
-        uses: mozilla-actions/sccache-action@v0.0.3
+        uses: mozilla-actions/sccache-action@v0.0.7
         with:
           version: "v0.5.4"
 
@@ -1620,7 +1620,7 @@ jobs:
           apt -y --no-install-recommends install software-properties-common curl
 
       - name: Install sccache
-        uses: mozilla-actions/sccache-action@v0.0.3
+        uses: mozilla-actions/sccache-action@v0.0.7
         with:
           version: "v0.5.4"
 
