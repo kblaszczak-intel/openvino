@@ -105,7 +105,7 @@ Prerequisites
     %pip install -q "nncf>=2.11.0"
     %pip install -Uq "openvino>=2024.3.0"
     %pip install -q "git+https://github.com/THU-MIG/yolov10.git" --extra-index-url https://download.pytorch.org/whl/cpu
-    %pip install -q "torch>=2.1" "torchvision>=0.16" tqdm opencv-python "gradio>=4.19" --extra-index-url https://download.pytorch.org/whl/cpu
+    %pip install -q "torch>=2.1" "torchvision>=0.16" tqdm opencv-python "gradio>=4.19" "matplotlib>=3.9" --extra-index-url https://download.pytorch.org/whl/cpu
 
 .. code:: ipython3
 

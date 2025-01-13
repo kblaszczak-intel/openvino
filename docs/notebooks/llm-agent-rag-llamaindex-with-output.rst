@@ -92,8 +92,8 @@ Install required dependencies
             r = requests.get(
                 url=f"https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/{local_path.name}",
             )
-        with local_path.open("w") as f:
-            f.write(r.text)
+            with local_path.open("w") as f:
+                f.write(r.text)
     
     os.environ["GIT_CLONE_PROTECTION_ACTIVE"] = "false"
     

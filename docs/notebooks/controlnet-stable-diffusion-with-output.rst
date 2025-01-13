@@ -216,14 +216,19 @@ Prerequisites
         "diffusers>=0.14.0",
         "matplotlib>=3.4",
         "transformers>=4.30.2",
-        "controlnet-aux>=0.0.6",
+        "einops",
+        "timm",
         "gradio>=3.36",
         "datasets>=2.14.6",
         "nncf>=2.7.0",
         "opencv-python",
+        "scipy",
+        "filelock",
+        "scikit-image",
         "--extra-index-url",
         "https://download.pytorch.org/whl/cpu",
     )
+    pip_install("--no-deps", "controlnet-aux>=0.0.6")
     pip_install("openvino>=2023.1.0")
 
 Instantiating Generation Pipeline

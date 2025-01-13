@@ -138,6 +138,7 @@ Install required dependencies
         "scikit-learn",
         "python-docx",
         "pypdf",
+        "huggingface-hub>=0.26.5",
     )
 
 .. code:: ipython3

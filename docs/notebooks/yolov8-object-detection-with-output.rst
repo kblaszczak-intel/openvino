@@ -10,22 +10,13 @@ This tutorial demonstrates step-by-step instructions on how to run and
 optimize PyTorch YOLOv8 with OpenVINO. We consider the steps required
 for object detection scenario.
 
-The tutorial consists of the following steps:
-
-- Prepare the PyTorch
-  model.
-- Download and prepare a dataset.
-- Validate the original model.
-- Convert the PyTorch model to OpenVINO IR.
-- Validate the converted
-  model.
-- Prepare and run optimization pipeline.
-- Compare performance of
-  the FP32 and quantized models.
-- Compare accuracy of the FP32 and
-  quantized models.
-- Other optimization possibilities with OpenVINO api
-- Live demo
+The tutorial consists of the following steps: - Prepare the PyTorch
+model. - Download and prepare a dataset. - Validate the original model.
+- Convert the PyTorch model to OpenVINO IR. - Validate the converted
+model. - Prepare and run optimization pipeline. - Compare performance of
+the FP32 and quantized models. - Compare accuracy of the FP32 and
+quantized models. - Other optimization possibilities with OpenVINO api -
+Live demo
 
 
 **Table of contents:**
@@ -133,16 +124,16 @@ Import required utility functions. The lower cell will download the
 .. code:: ipython3
 
     from pathlib import Path
-
+    
     # Fetch `notebook_utils` module
     import requests
-
+    
     r = requests.get(
         url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/notebook_utils.py",
     )
-
+    
     open("notebook_utils.py", "w").write(r.text)
-
+    
     from notebook_utils import download_file, VideoPlayer, device_widget, quantization_widget
 
 .. code:: ipython3
@@ -197,12 +188,12 @@ Let us consider the examples:
 
     from PIL import Image
     from ultralytics import YOLO
-
+    
     DET_MODEL_NAME = "yolov8n"
-
+    
     det_model = YOLO(models_dir / f"{DET_MODEL_NAME}.pt")
     label_map = det_model.model.names
-
+    
     res = det_model(IMAGE_PATH)
     Image.fromarray(res[0].plot()[:, :, ::-1])
 
@@ -219,7 +210,7 @@ Let us consider the examples:
 
 .. parsed-literal::
 
-
+    
     image 1/1 /home/akash/intel/openvino_notebooks/notebooks/yolov8-optimization/data/coco_bike.jpg: 480x640 2 bicycles, 2 cars, 1 dog, 82.9ms
     Speed: 2.4ms preprocess, 82.9ms inference, 475.6ms postprocess per image at shape (1, 3, 480, 640)
 
@@ -251,16 +242,16 @@ preserve dynamic shapes in the model.
 .. parsed-literal::
 
     Ultralytics YOLOv8.2.24 🚀 Python-3.8.10 torch-2.1.0+cu121 CPU (Intel Core(TM) i9-10980XE 3.00GHz)
-
+    
     PyTorch: starting from 'models/yolov8n.pt' with input shape (1, 3, 640, 640) BCHW and output shape(s) (1, 84, 8400) (6.2 MB)
-
+    
     OpenVINO: starting export with openvino 2024.3.0-16041-1e3b88e4e3f-releases/2024/3...
     OpenVINO: export success ✅ 1.7s, saved as 'models/yolov8n_openvino_model/' (6.4 MB)
-
+    
     Export complete (3.1s)
     Results saved to /home/akash/intel/openvino_notebooks/notebooks/yolov8-optimization/models
-    Predict:         yolo predict task=detect model=models/yolov8n_openvino_model imgsz=640 half
-    Validate:        yolo val task=detect model=models/yolov8n_openvino_model imgsz=640 data=coco.yaml half
+    Predict:         yolo predict task=detect model=models/yolov8n_openvino_model imgsz=640 half 
+    Validate:        yolo val task=detect model=models/yolov8n_openvino_model imgsz=640 data=coco.yaml half 
     Visualize:       https://netron.app
 
 
@@ -283,7 +274,7 @@ Select device from dropdown list for running inference using OpenVINO
 .. code:: ipython3
 
     device = device_widget()
-
+    
     device
 
 
@@ -307,34 +298,34 @@ ready to check model prediction for object detection.
 
     import torch
     import openvino as ov
-
+    
     core = ov.Core()
-
+    
     det_ov_model = core.read_model(det_model_path)
-
+    
     ov_config = {}
     if device.value != "CPU":
         det_ov_model.reshape({0: [1, 3, 640, 640]})
     if "GPU" in device.value or ("AUTO" in device.value and "GPU" in core.available_devices):
         ov_config = {"GPU_DISABLE_WINOGRAD_CONVOLUTION": "YES"}
     det_compiled_model = core.compile_model(det_ov_model, device.value, ov_config)
-
-
+    
+    
     def infer(*args):
         result = det_compiled_model(args)
         return torch.from_numpy(result[0])
-
-
+    
+    
     det_model.predictor.inference = infer
     det_model.predictor.model.pt = False
-
+    
     res = det_model(IMAGE_PATH)
     Image.fromarray(res[0].plot()[:, :, ::-1])
 
 
 .. parsed-literal::
 
-
+    
     image 1/1 /home/akash/intel/openvino_notebooks/notebooks/yolov8-optimization/data/coco_bike.jpg: 640x640 2 bicycles, 2 cars, 1 dog, 16.1ms
     Speed: 3.4ms preprocess, 16.1ms inference, 1.8ms postprocess per image at shape (1, 3, 640, 640)
 
@@ -372,24 +363,24 @@ evaluation function.
 .. code:: ipython3
 
     from zipfile import ZipFile
-
+    
     from ultralytics.data.utils import DATASETS_DIR
-
-
+    
+    
     DATA_URL = "http://images.cocodataset.org/zips/val2017.zip"
     LABELS_URL = "https://github.com/ultralytics/yolov5/releases/download/v1.0/coco2017labels-segments.zip"
     CFG_URL = "https://raw.githubusercontent.com/ultralytics/ultralytics/v8.1.0/ultralytics/cfg/datasets/coco.yaml"
-
+    
     OUT_DIR = DATASETS_DIR
-
+    
     DATA_PATH = OUT_DIR / "val2017.zip"
     LABELS_PATH = OUT_DIR / "coco2017labels-segments.zip"
     CFG_PATH = OUT_DIR / "coco.yaml"
-
+    
     download_file(DATA_URL, DATA_PATH.name, DATA_PATH.parent)
     download_file(LABELS_URL, LABELS_PATH.name, LABELS_PATH.parent)
     download_file(CFG_URL, CFG_PATH.name, CFG_PATH.parent)
-
+    
     if not (OUT_DIR / "coco/labels").exists():
         with ZipFile(LABELS_PATH, "r") as zip_ref:
             zip_ref.extractall(OUT_DIR)
@@ -410,221 +401,221 @@ evaluation function.
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
     IOPub message rate exceeded.
     The Jupyter server will temporarily stop sending output
     to the client in order to avoid crashing it.
     To change this limit, set the config variable
     `--ServerApp.iopub_msg_rate_limit`.
-
+    
     Current values:
     ServerApp.iopub_msg_rate_limit=1000.0 (msgs/sec)
     ServerApp.rate_limit_window=3.0 (secs)
-
+    
 
 
 .. parsed-literal::
@@ -646,11 +637,11 @@ Define validation function
 .. code:: ipython3
 
     import numpy as np
-
+    
     from tqdm.notebook import tqdm
     from ultralytics.utils.metrics import ConfusionMatrix
-
-
+    
+    
     def test(
         model: ov.Model,
         core: ov.Core,
@@ -685,8 +676,8 @@ Define validation function
             validator.update_metrics(preds, batch)
         stats = validator.get_stats()
         return stats
-
-
+    
+    
     def print_stats(stats: np.ndarray, total_images: int, total_objects: int):
         """
         Helper function for printing accuracy statistic
@@ -761,7 +752,7 @@ validator class instance.
     from ultralytics.cfg import get_cfg
     from ultralytics.data.converter import coco80_to_coco91_class
     from ultralytics.data.utils import check_det_dataset
-
+    
     args = get_cfg(cfg=DEFAULT_CFG)
     args.data = str(CFG_PATH)
 
@@ -865,9 +856,9 @@ improve model inference speed.
 
     int8_model_det_path = models_dir / f"{DET_MODEL_NAME}_openvino_int8_model/{DET_MODEL_NAME}.xml"
     quantized_det_model = None
-
+    
     to_quantize = quantization_widget()
-
+    
     to_quantize
 
 
@@ -889,7 +880,7 @@ Let’s load ``skip magic`` extension to skip quantization if
         url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/skip_kernel_extension.py",
     )
     open("skip_kernel_extension.py", "w").write(r.text)
-
+    
     %load_ext skip_kernel_extension
 
 Reuse validation dataloader in accuracy testing for quantization. For
@@ -899,11 +890,11 @@ transformation function for getting only input tensors.
 .. code:: ipython3
 
     %%skip not $to_quantize.value
-
+    
     import nncf
     from typing import Dict
-
-
+    
+    
     def transform_fn(data_item:Dict):
         """
         Quantization transform function. Extracts and preprocess input data from dataloader item for quantization.
@@ -914,8 +905,8 @@ transformation function for getting only input tensors.
         """
         input_tensor = det_validator.preprocess(data_item)['img'].numpy()
         return input_tensor
-
-
+    
+    
     quantization_dataset = nncf.Dataset(det_data_loader, transform_fn)
 
 
@@ -942,7 +933,7 @@ point precision, using the ``ignored_scope`` parameter.
 .. code:: ipython3
 
     %%skip not $to_quantize.value
-
+    
     ignored_scope = nncf.IgnoredScope( # post-processing
         subgraphs=[
             nncf.Subgraph(inputs=['__module.model.22/aten::cat/Concat',
@@ -951,7 +942,7 @@ point precision, using the ``ignored_scope`` parameter.
                           outputs=['__module.model.22/aten::cat/Concat_7'])
         ]
     )
-
+    
     # Detection model
     quantized_det_model = nncf.quantize(
         det_ov_model,
@@ -983,7 +974,7 @@ point precision, using the ``ignored_scope`` parameter.
     INFO:nncf:Not adding activation input quantizer for operation: 226 __module.model.22/aten::add/Add_6
     INFO:nncf:Not adding activation input quantizer for operation: 235 __module.model.22/aten::add/Add_7
     244 __module.model.22/aten::div/Divide
-
+    
     INFO:nncf:Not adding activation input quantizer for operation: 236 __module.model.22/aten::sub/Subtract_1
     INFO:nncf:Not adding activation input quantizer for operation: 245 __module.model.22/aten::cat/Concat_5
     INFO:nncf:Not adding activation input quantizer for operation: 214 __module.model.22/aten::mul/Multiply_3
@@ -1035,7 +1026,7 @@ point precision, using the ``ignored_scope`` parameter.
 .. code:: ipython3
 
     %%skip not $to_quantize.value
-
+    
     print(f"Quantized detection model will be saved to {int8_model_det_path}")
     ov.save_model(quantized_det_model, str(int8_model_det_path))
 
@@ -1060,34 +1051,34 @@ on the image.
 .. code:: ipython3
 
     %%skip not $to_quantize.value
-
+    
     device
 
 .. code:: ipython3
 
     %%skip not $to_quantize.value
-
+    
     ov_config = {}
     if device.value != "CPU":
         quantized_det_model.reshape({0: [1, 3, 640, 640]})
     if "GPU" in device.value or ("AUTO" in device.value and "GPU" in core.available_devices):
         ov_config = {"GPU_DISABLE_WINOGRAD_CONVOLUTION": "YES"}
     quantized_det_compiled_model = core.compile_model(quantized_det_model, device.value, ov_config)
-
-
+    
+    
     def infer(*args):
         result = quantized_det_compiled_model(args)
         return torch.from_numpy(result[0])
-
+    
     det_model.predictor.inference = infer
-
+    
     res = det_model(IMAGE_PATH)
     display(Image.fromarray(res[0].plot()[:, :, ::-1]))
 
 
 .. parsed-literal::
 
-
+    
     image 1/1 /home/akash/intel/openvino_notebooks/notebooks/yolov8-optimization/data/coco_bike.jpg: 640x640 2 bicycles, 2 cars, 1 dog, 10.9ms
     Speed: 3.7ms preprocess, 10.9ms inference, 1.9ms postprocess per image at shape (1, 3, 640, 640)
 
@@ -1123,7 +1114,7 @@ models.
 .. code:: ipython3
 
     %%skip not $to_quantize.value
-
+    
     device
 
 .. code:: ipython3
@@ -1141,12 +1132,12 @@ models.
     [ WARNING ] Default duration 120 seconds is used for unknown device AUTO
     [ INFO ] OpenVINO:
     [ INFO ] Build ................................. 2024.3.0-16041-1e3b88e4e3f-releases/2024/3
-    [ INFO ]
+    [ INFO ] 
     [ INFO ] Device info:
     [ INFO ] AUTO
     [ INFO ] Build ................................. 2024.3.0-16041-1e3b88e4e3f-releases/2024/3
-    [ INFO ]
-    [ INFO ]
+    [ INFO ] 
+    [ INFO ] 
     [Step 3/11] Setting device configuration
     [ WARNING ] Performance hint was not explicitly specified in command line. Device(AUTO) performance hint will be set to PerformanceMode.THROUGHPUT.
     [Step 4/11] Reading model files
@@ -1201,7 +1192,7 @@ models.
     [ INFO ]   PERF_COUNT: False
     [Step 9/11] Creating infer requests and preparing input tensors
     [ WARNING ] No input files were given for input 'x'!. This input will be filled with random values!
-    [ INFO ] Fill input 'x' with random values
+    [ INFO ] Fill input 'x' with random values 
     [Step 10/11] Measuring performance (Start inference asynchronously, 12 inference requests, limits: 120000 ms duration)
     [ INFO ] Benchmarking in inference only mode (inputs filling are not included in measurement loop).
     [ INFO ] First inference took 40.11 ms
@@ -1231,12 +1222,12 @@ models.
     [Step 2/11] Loading OpenVINO Runtime
     [ INFO ] OpenVINO:
     [ INFO ] Build ................................. 2024.3.0-16041-1e3b88e4e3f-releases/2024/3
-    [ INFO ]
+    [ INFO ] 
     [ INFO ] Device info:
     [ INFO ] AUTO
     [ INFO ] Build ................................. 2024.3.0-16041-1e3b88e4e3f-releases/2024/3
-    [ INFO ]
-    [ INFO ]
+    [ INFO ] 
+    [ INFO ] 
     [Step 3/11] Setting device configuration
     [ WARNING ] Performance hint was not explicitly specified in command line. Device(AUTO) performance hint will be set to PerformanceMode.THROUGHPUT.
     [Step 4/11] Reading model files
@@ -1291,7 +1282,7 @@ models.
     [ INFO ]   PERF_COUNT: False
     [Step 9/11] Creating infer requests and preparing input tensors
     [ WARNING ] No input files were given for input 'x'!. This input will be filled with random values!
-    [ INFO ] Fill input 'x' with random values
+    [ INFO ] Fill input 'x' with random values 
     [Step 10/11] Measuring performance (Start inference asynchronously, 18 inference requests, limits: 15000 ms duration)
     [ INFO ] Benchmarking in inference only mode (inputs filling are not included in measurement loop).
     [ INFO ] First inference took 31.53 ms
@@ -1320,7 +1311,7 @@ accuracy on a dataset.
 .. code:: ipython3
 
     %%skip not $to_quantize.value
-
+    
     int8_det_stats = test(quantized_det_model, core, det_data_loader, det_validator, num_samples=NUM_TEST_SAMPLES)
 
 
@@ -1333,10 +1324,10 @@ accuracy on a dataset.
 .. code:: ipython3
 
     %%skip not $to_quantize.value
-
+    
     print("FP32 model accuracy")
     print_stats(fp_det_stats, det_validator.seen, det_validator.nt_per_class.sum())
-
+    
     print("INT8 model accuracy")
     print_stats(int8_det_stats, det_validator.seen, det_validator.nt_per_class.sum())
 
@@ -1409,7 +1400,7 @@ preprocessing and postprocessing steps for a model.
 .. code:: ipython3
 
     from openvino.preprocess import PrePostProcessor
-
+    
     ppp = PrePostProcessor(quantized_det_model if quantized_det_model is not None else det_model)
 
 Define input data format
@@ -1449,7 +1440,7 @@ preprocessing steps:
 .. code:: ipython3
 
     ppp.input(0).preprocess().convert_element_type(ov.Type.f32).convert_layout(ov.Layout("NCHW")).scale([255.0, 255.0, 255.0])
-
+    
     print(ppp)
 
 
@@ -1462,7 +1453,7 @@ preprocessing steps:
           convert type (f32): ([1,640,640,3], [N,H,W,C], u8) -> ([1,640,640,3], [N,H,W,C], f32)
           convert layout [N,C,H,W]: ([1,640,640,3], [N,H,W,C], f32) -> ([1,3,640,640], [N,C,H,W], f32)
           scale (255,255,255): ([1,3,640,640], [N,C,H,W], f32) -> ([1,3,640,640], [N,C,H,W], f32)
-
+    
 
 
 Integrating Steps into a Model
@@ -1477,7 +1468,7 @@ IR, using ``openvino.runtime.serialize``.
 .. code:: ipython3
 
     quantized_model_with_preprocess = ppp.build()
-
+    
     with_preprocess_path = (
         int8_model_det_path.with_name(f"{DET_MODEL_NAME}_with_preprocess.xml")
         if quantized_det_model is not None
@@ -1495,8 +1486,8 @@ device.
     import numpy as np
     from ultralytics.utils.plotting import colors
     import random
-
-
+    
+    
     def plot_one_box(
         box: np.ndarray,
         img: np.ndarray,
@@ -1533,10 +1524,10 @@ device.
                 thickness=tf,
                 lineType=cv2.LINE_AA,
             )
-
+    
         return img
-
-
+    
+    
     def draw_results(results: Dict, source_image: np.ndarray, label_map: Dict):
         """
         Helper function for drawing bounding boxes on image
@@ -1578,8 +1569,8 @@ classes.
     from ultralytics.utils import ops
     import torch
     import numpy as np
-
-
+    
+    
     def letterbox(
         img: np.ndarray,
         new_shape: Tuple[int, int] = (640, 640),
@@ -1592,7 +1583,7 @@ classes.
         """
         Resize image and padding for detection. Takes image as input,
         resizes image to fit into new shape with saving original aspect ratio and pads it to meet stride-multiple constraints
-
+    
         Parameters:
           img (np.ndarray): image for preprocessing
           new_shape (Tuple(int, int)): image size after preprocessing in format [height, width]
@@ -1605,19 +1596,19 @@ classes.
           img (np.ndarray): image after preprocessing
           ratio (Tuple(float, float)): hight and width scaling ratio
           padding_size (Tuple(int, int)): height and width padding size
-
-
+    
+    
         """
         # Resize and pad image while meeting stride-multiple constraints
         shape = img.shape[:2]  # current shape [height, width]
         if isinstance(new_shape, int):
             new_shape = (new_shape, new_shape)
-
+    
         # Scale ratio (new / old)
         r = min(new_shape[0] / shape[0], new_shape[1] / shape[1])
         if not scaleup:  # only scale down, do not scale up (for better test mAP)
             r = min(r, 1.0)
-
+    
         # Compute padding
         ratio = r, r  # width, height ratios
         new_unpad = int(round(shape[1] * r)), int(round(shape[0] * r))
@@ -1628,18 +1619,18 @@ classes.
             dw, dh = 0.0, 0.0
             new_unpad = (new_shape[1], new_shape[0])
             ratio = new_shape[1] / shape[1], new_shape[0] / shape[0]  # width, height ratios
-
+    
         dw /= 2  # divide padding into 2 sides
         dh /= 2
-
+    
         if shape[::-1] != new_unpad:  # resize
             img = cv2.resize(img, new_unpad, interpolation=cv2.INTER_LINEAR)
         top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
         left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
         img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
         return img, ratio, (dw, dh)
-
-
+    
+    
     def postprocess(
         pred_boxes: np.ndarray,
         input_hw: Tuple[int, int],
@@ -1664,7 +1655,7 @@ classes.
         """
         nms_kwargs = {"agnostic": agnosting_nms, "max_det": max_detections}
         preds = ops.non_max_suppression(torch.from_numpy(pred_boxes), min_conf_threshold, nms_iou_threshold, nc=80, **nms_kwargs)
-
+    
         results = []
         for i, pred in enumerate(preds):
             shape = orig_img[i].shape if isinstance(orig_img, list) else orig_img.shape
@@ -1673,7 +1664,7 @@ classes.
                 continue
             pred[:, :4] = ops.scale_boxes(input_hw, pred[:, :4], shape).round()
             results.append({"det": pred})
-
+    
         return results
 
 Now, we can skip these preprocessing steps in detect function:
@@ -1696,13 +1687,13 @@ Now, we can skip these preprocessing steps in detect function:
         result = model(input_tensor)[output_layer]
         detections = postprocess(result, input_hw, image)
         return detections
-
-
+    
+    
     compiled_model = core.compile_model(quantized_model_with_preprocess, device.value)
     input_image = np.array(Image.open(IMAGE_PATH))
     detections = detect_without_preprocess(input_image, compiled_model)[0]
     image_with_boxes = draw_results(detections, input_image, label_map)
-
+    
     Image.fromarray(image_with_boxes)
 
 
@@ -1724,10 +1715,10 @@ The following code runs model inference on a video:
     import collections
     import time
     from IPython import display
-
+    
     det_ov_model
-
-
+    
+    
     # Main processing function to run object detection.
     def run_object_detection(
         source=0,
@@ -1744,13 +1735,13 @@ The following code runs model inference on a video:
         if "GPU" in device or ("AUTO" in device and "GPU" in core.available_devices):
             ov_config = {"GPU_DISABLE_WINOGRAD_CONVOLUTION": "YES"}
         compiled_model = core.compile_model(model, device, ov_config)
-
+    
         def infer(*args):
             result = compiled_model(args)
             return torch.from_numpy(result[0])
-
+    
         det_model.predictor.inference = infer
-
+    
         try:
             # Create a video player to play with target fps.
             player = VideoPlayer(source=source, flip=flip, fps=30, skip_first_frames=skip_first_frames)
@@ -1759,7 +1750,7 @@ The following code runs model inference on a video:
             if use_popup:
                 title = "Press ESC to Exit"
                 cv2.namedWindow(winname=title, flags=cv2.WINDOW_GUI_NORMAL | cv2.WINDOW_AUTOSIZE)
-
+    
             processing_times = collections.deque()
             while True:
                 # Grab the frame.
@@ -1779,17 +1770,17 @@ The following code runs model inference on a video:
                     )
                 # Get the results.
                 input_image = np.array(frame)
-
+    
                 start_time = time.time()
                 detections = det_model(input_image, verbose=False)
                 stop_time = time.time()
                 frame = detections[0].plot()
-
+    
                 processing_times.append(stop_time - start_time)
                 # Use processing times from last 200 frames.
                 if len(processing_times) > 200:
                     processing_times.popleft()
-
+    
                 _, f_width = frame.shape[:2]
                 # Mean processing time [ms].
                 processing_time = np.mean(processing_times) * 1000
@@ -1856,7 +1847,7 @@ Run the object detection:
 .. code:: ipython3
 
     WEBCAM_INFERENCE = False
-
+    
     if WEBCAM_INFERENCE:
         VIDEO_SOURCE = 0  # Webcam
     else:

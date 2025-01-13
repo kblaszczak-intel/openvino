@@ -98,6 +98,8 @@ own <https://github.com/svc-develop-team/so-vits-svc#%EF%B8%8F-training>`__.
 
 .. code:: ipython3
 
+    import os
+    
     from notebook_utils import download_file, device_widget
     
     
@@ -114,6 +116,8 @@ own <https://github.com/svc-develop-team/so-vits-svc#%EF%B8%8F-training>`__.
         "kmeans_10000.pt",
         directory="so-vits-svc/logs/44k/",
     )
+    if os.stat("so-vits-svc/configs/config.json").st_size == 0:  # cleanup if it is default empty file
+        os.remove("so-vits-svc/configs/config.json")
     download_file(
         "https://huggingface.co/therealvul/so-vits-svc-4.0/resolve/main/Rainbow%20Dash%20(singing)/config.json",
         "config.json",

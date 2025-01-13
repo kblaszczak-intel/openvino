@@ -52,7 +52,7 @@ image and a message.
     Unable to find image 'hello-world:latest' locally
     latest: Pulling from library/hello-world
     
-    [1BDigest: sha256:305243c734571da2d100c8c8b3c3167a098cab6049c9a5b066b6021a60fcb966
+    [1BDigest: sha256:5b3cc85e16e3058003c13b7821318369dad01dac3dbb877aac3c28182255c724
     Status: Downloaded newer image for hello-world:latest
     
     Hello from Docker!
@@ -174,7 +174,7 @@ request from a separate notebook.
 
 .. parsed-literal::
 
-    67e1a2a8123aa15794c027278aed2c258a04e06883663459bbeaca22ff014740
+    bd8c920b77b55998158ac224ff83b7d4c097950a92034fa517e72bf575c0fbaa
     docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: error running hook #1: error running hook: exit status 1, stdout: , stderr: Auto-detected mode as 'legacy'
     nvidia-container-cli: requirement error: invalid expression: unknown.
 

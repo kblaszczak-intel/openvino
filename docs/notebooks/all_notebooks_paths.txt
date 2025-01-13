@@ -12,7 +12,6 @@ notebooks/clip-language-saliency-map/clip-language-saliency-map.ipynb
 notebooks/clip-zero-shot-image-classification/clip-zero-shot-classification.ipynb
 notebooks/controlnet-stable-diffusion/controlnet-stable-diffusion.ipynb
 notebooks/convert-to-openvino/convert-to-openvino.ipynb
-notebooks/cross-lingual-books-alignment/cross-lingual-books-alignment.ipynb
 notebooks/ct-segmentation-quantize/ct-segmentation-quantize-nncf.ipynb
 notebooks/ddcolor-image-colorization/ddcolor-image-colorization.ipynb
 notebooks/depth-anything/depth-anything.ipynb
@@ -75,11 +74,13 @@ notebooks/mobileclip-video-search/mobileclip-video-search.ipynb
 notebooks/modelscope-to-openvino/modelscope-to-openvino.ipynb
 notebooks/model-server/model-server.ipynb
 notebooks/multilora-image-generation/multilora-image-generation.ipynb
+notebooks/multimodal-rag/multimodal-rag-llamaindex.ipynb
 notebooks/music-generation/music-generation.ipynb
 notebooks/named-entity-recognition/named-entity-recognition.ipynb
 notebooks/nano-llava-multimodal-chatbot/nano-llava-multimodal-chatbot.ipynb
 notebooks/nuextract-structure-extraction/nuextract-structure-extraction.ipynb
 notebooks/object-detection-webcam/object-detection.ipynb
+notebooks/omnigen/omnigen.ipynb
 notebooks/omniparser/omniparser.ipynb
 notebooks/oneformer-segmentation/oneformer-segmentation.ipynb
 notebooks/openvino-api/openvino-api.ipynb

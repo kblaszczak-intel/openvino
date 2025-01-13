@@ -86,7 +86,7 @@ Install dependencies.
     %pip install -q -U "openvino>=2024.5.0" "openvino-tokenizers>=2024.5.0" "openvino-genai>=2024.5.0"
     %pip install -q "python-ffmpeg<=1.0.16" "ffmpeg" "moviepy" "transformers>=4.45" "git+https://github.com/huggingface/optimum-intel.git" "torch>=2.1" --extra-index-url https://download.pytorch.org/whl/cpu
     %pip install -q -U "yt_dlp>=2024.8.6" soundfile librosa jiwer packaging
-    %pip install -q  "gradio>=4.19" "typing_extensions>=4.9"
+    %pip install -q  -U "gradio>=4.19" "typing_extensions>=4.9"
     
     if platform.system() == "Darwin":
         %pip install -q "numpy<2.0"
@@ -346,7 +346,7 @@ Select the task for the model:
         input_video = VideoFileClip(str(video_file))
         duration = input_video.duration
         audio_file = video_file.stem + ".wav"
-        input_video.audio.write_audiofile(audio_file, verbose=False, logger=None)
+        input_video.audio.write_audiofile(audio_file, logger=None)
         with open(audio_file, "rb") as f:
             inputs = f.read()
         audio = ffmpeg_read(inputs, 16000)

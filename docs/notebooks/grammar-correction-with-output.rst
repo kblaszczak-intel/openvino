@@ -143,8 +143,13 @@ documentation <https://huggingface.co/docs/optimum/intel/inference>`__.
 
 .. code:: ipython3
 
+    import platform
+    
     %pip install -q "torch>=2.1.0" "git+https://github.com/huggingface/optimum-intel.git" "openvino>=2024.0.0" "onnx<1.16.2" tqdm "gradio>=4.19" "transformers>=4.33.0" --extra-index-url https://download.pytorch.org/whl/cpu
     %pip install -q "nncf>=2.9.0" datasets jiwer
+    
+    if platform.system() == "Darwin":
+        %pip install -q "numpy<2.0.0"
 
 Download and Convert Models
 ---------------------------
@@ -274,12 +279,10 @@ Hugging Face inference pipelines in this
 
 .. code:: ipython3
 
+    import torch
+    
     input_text = "They are moved by salar energy"
-    grammar_checker_pipe = pipeline(
-        "text-classification",
-        model=grammar_checker_model,
-        tokenizer=grammar_checker_tokenizer,
-    )
+    grammar_checker_pipe = pipeline("text-classification", model=grammar_checker_model, tokenizer=grammar_checker_tokenizer, device=torch.device("cpu"))
     result = grammar_checker_pipe(input_text)[0]
     print(f"input text: {input_text}")
     print(f'predicted label: {"contains_errors" if result["label"] == "LABEL_1" else "no errors"}')
@@ -352,11 +355,7 @@ to run it.
 
 .. code:: ipython3
 
-    grammar_corrector_pipe = pipeline(
-        "text2text-generation",
-        model=grammar_corrector_model,
-        tokenizer=grammar_corrector_tokenizer,
-    )
+    grammar_corrector_pipe = pipeline("text2text-generation", model=grammar_corrector_model, tokenizer=grammar_corrector_tokenizer, device=torch.device("cpu"))
 
 .. code:: ipython3
 

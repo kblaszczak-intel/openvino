@@ -57,11 +57,14 @@ Prerequisites
 
 
 
+-  Recommend >= 32GB RAM to convert “llava-hf/llava-v1.6-mistral-7b-hf”
+   to OpenVino IR format.
+
 .. code:: ipython3
 
     %pip install -q "nncf>=2.14.0" "torch>=2.1" "transformers>=4.39.1" "accelerate" "pillow" "gradio>=4.26" "datasets>=2.14.6" "tqdm" --extra-index-url https://download.pytorch.org/whl/cpu
     %pip install -q -U "openvino>=2024.5.0" "openvino-tokenizers>=2024.5.0" "openvino-genai>=2024.5"
-    %pip install -q "git+https://github.com/hugggingface/optimum-intel.git" --extra-index-url https://download.pytorch.org/whl/cpu
+    %pip install -q "git+https://github.com/huggingface/optimum-intel.git" --extra-index-url https://download.pytorch.org/whl/cpu
 
 .. code:: ipython3
 
@@ -405,7 +408,7 @@ one of the most critical aspects of a smooth experience.
 
 
 
-.. image:: llava-next-multimodal-chatbot-with-output_files/llava-next-multimodal-chatbot-with-output_17_0.png
+.. image:: llava-next-multimodal-chatbot-with-output_files/llava-next-multimodal-chatbot-with-output_18_0.png
 
 
 .. parsed-literal::

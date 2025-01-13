@@ -20,9 +20,8 @@ high speeds on some edge platforms.
 In this tutorial we consider how to launch multimodal model GLM-Edge-V
 using OpenVINO for creation multimodal chatbot. Additionally, we
 optimize model to low precision using
-`NNCF <https://github.com/openvinotoolkit/nncf>`__
-
-**Table of contents:**
+`NNCF <https://github.com/openvinotoolkit/nncf>`__ #### Table of
+contents:
 
 -  `Prerequisites <#prerequisites>`__
 -  `Select Model <#select-model>`__
@@ -74,24 +73,24 @@ install required packages and setup helper functions.
 .. parsed-literal::
 
       error: subprocess-exited-with-error
-
+      
       × Preparing metadata (pyproject.toml) did not run successfully.
       │ exit code: 1
       ╰─> [6 lines of output]
-
+          
           Cargo, the Rust package manager, is not installed or is not on PATH.
           This package requires Rust and Cargo to compile extensions. Install it through
           the system's package manager or via https://rustup.rs/
-
+          
           Checking for Rust toolchain....
           [end of output]
-
+      
       note: This error originates from a subprocess, and is likely not a problem with pip.
     error: metadata-generation-failed
-
+    
     × Encountered error while generating package metadata.
     ╰─> See above for output.
-
+    
     note: This is an issue with the package mentioned above, not pip.
     hint: See above for details.
     Note: you may need to restart the kernel to use updated packages.
@@ -101,16 +100,16 @@ install required packages and setup helper functions.
 
     import requests
     from pathlib import Path
-
+    
     if not Path("glmv_helper.py").exists():
         r = requests.get(url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/notebooks/glm-edge-v/glmv_helper.py")
         open("glmv_helper.py", "w").write(r.text)
-
-
+    
+    
     if not Path("gradio_helper.py").exists():
         r = requests.get(url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/notebooks/glm-edge-v/gradio_helper.py")
         open("gradio_helper.py", "w").write(r.text)
-
+    
     if not Path("notebook_utils.py").exists():
         r = requests.get(url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/notebook_utils.py")
         open("notebook_utils.py", "w").write(r.text)
@@ -121,29 +120,28 @@ Select Model
 
 
 The tutorial supports the following models from GLM-Edge-V model family:
-
-- `glm-edge-v-2b <https://huggingface.co/THUDM/glm-edge-v-2b>`__
-- `glm-edge-v-5b <https://huggingface.co/THUDM/glm-edge-v-5b>`__
+- `glm-edge-v-2b <https://huggingface.co/THUDM/glm-edge-v-2b>`__ -
+`glm-edge-v-5b <https://huggingface.co/THUDM/glm-edge-v-5b>`__
 
 You can select one from the provided options below.
 
 .. code:: ipython3
 
     import ipywidgets as widgets
-
+    
     # Select model
     model_ids = [
         "THUDM/glm-edge-v-2b",
         "THUDM/glm-edge-v-5b",
     ]
-
+    
     model_dropdown = widgets.Dropdown(
         options=model_ids,
         value=model_ids[0],
         description="Model:",
         disabled=False,
     )
-
+    
     model_dropdown
 
 
@@ -262,8 +260,8 @@ documentation <https://docs.openvino.ai/2024/openvino-workflow/model-optimizatio
     from pathlib import Path
     import nncf
     from glmv_helper import convert_glmv_model
-
-
+    
+    
     model_id = model_dropdown.value
     out_dir = Path("model") / Path(model_id).name / "INT4"
     compression_configuration = {
@@ -281,10 +279,10 @@ documentation <https://docs.openvino.ai/2024/openvino-workflow/model-optimizatio
 
 .. parsed-literal::
 
-    2024-12-10 01:51:54.756921: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
-    2024-12-10 01:51:54.790860: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+    2025-01-11 02:38:12.685728: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+    2025-01-11 02:38:12.719897: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
     To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-    2024-12-10 01:51:55.339388: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+    2025-01-11 02:38:13.267735: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
 
 
 .. parsed-literal::
@@ -299,7 +297,7 @@ documentation <https://docs.openvino.ai/2024/openvino-workflow/model-optimizatio
 .. parsed-literal::
 
     [ WARNING ]  Please fix your imports. Module %s has been moved to %s. The old module will be deleted in version %s.
-    /opt/home/k8sworker/ci-ai/cibuilds/jobs/ov-notebook/jobs/OVNotebookOps/builds/835/archive/.workspace/scm/ov-notebook/.venv/lib/python3.8/site-packages/transformers/modeling_utils.py:5006: FutureWarning: `_is_quantized_training_enabled` is going to be deprecated in transformers 4.39.0. Please use `model.hf_quantizer.is_trainable` instead
+    /opt/home/k8sworker/ci-ai/cibuilds/jobs/ov-notebook/jobs/OVNotebookOps/builds/859/archive/.workspace/scm/ov-notebook/.venv/lib/python3.8/site-packages/transformers/modeling_utils.py:5006: FutureWarning: `_is_quantized_training_enabled` is going to be deprecated in transformers 4.39.0. Please use `model.hf_quantizer.is_trainable` instead
       warnings.warn(
     `loss_type=None` was set in the config but it is unrecognised.Using the default loss: `ForCausalLMLoss`.
 
@@ -312,9 +310,9 @@ documentation <https://docs.openvino.ai/2024/openvino-workflow/model-optimizatio
 
 .. parsed-literal::
 
-    /opt/home/k8sworker/.cache/huggingface/modules/transformers_modules/THUDM/glm-edge-v-2b/30c2bc691c9d46433abfd450e04441458d503f34/siglip.py:48: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+    /opt/home/k8sworker/.cache/huggingface/modules/transformers_modules/THUDM/glm-edge-v-2b/2053707733f99ab52e943904f43c2359a94301ef/siglip.py:48: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
       grid_size = int(s**0.5)
-    /opt/home/k8sworker/.cache/huggingface/modules/transformers_modules/THUDM/glm-edge-v-2b/30c2bc691c9d46433abfd450e04441458d503f34/siglip.py:53: TracerWarning: Using len to get tensor shape might cause the trace to be incorrect. Recommended usage would be tensor.shape[0]. Passing a tensor of different shape might lead to errors or silently give incorrect results.
+    /opt/home/k8sworker/.cache/huggingface/modules/transformers_modules/THUDM/glm-edge-v-2b/2053707733f99ab52e943904f43c2359a94301ef/siglip.py:53: TracerWarning: Using len to get tensor shape might cause the trace to be incorrect. Recommended usage would be tensor.shape[0]. Passing a tensor of different shape might lead to errors or silently give incorrect results.
       image_emb = torch.cat([self.boi.repeat(len(image_emb), 1, 1), image_emb, self.eoi.repeat(len(image_emb), 1, 1)], dim=1)
 
 
@@ -326,17 +324,17 @@ documentation <https://docs.openvino.ai/2024/openvino-workflow/model-optimizatio
 
 .. parsed-literal::
 
-    /opt/home/k8sworker/ci-ai/cibuilds/jobs/ov-notebook/jobs/OVNotebookOps/builds/835/archive/.workspace/scm/ov-notebook/.venv/lib/python3.8/site-packages/transformers/cache_utils.py:458: TracerWarning: Using len to get tensor shape might cause the trace to be incorrect. Recommended usage would be tensor.shape[0]. Passing a tensor of different shape might lead to errors or silently give incorrect results.
+    /opt/home/k8sworker/ci-ai/cibuilds/jobs/ov-notebook/jobs/OVNotebookOps/builds/859/archive/.workspace/scm/ov-notebook/.venv/lib/python3.8/site-packages/transformers/cache_utils.py:458: TracerWarning: Using len to get tensor shape might cause the trace to be incorrect. Recommended usage would be tensor.shape[0]. Passing a tensor of different shape might lead to errors or silently give incorrect results.
       or len(self.key_cache[layer_idx]) == 0  # the layer has no cache
-    /opt/home/k8sworker/.cache/huggingface/modules/transformers_modules/THUDM/glm-edge-v-2b/30c2bc691c9d46433abfd450e04441458d503f34/modeling_glm.py:995: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+    /opt/home/k8sworker/.cache/huggingface/modules/transformers_modules/THUDM/glm-edge-v-2b/2053707733f99ab52e943904f43c2359a94301ef/modeling_glm.py:1010: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
       if sequence_length != 1:
-    /opt/home/k8sworker/.cache/huggingface/modules/transformers_modules/THUDM/glm-edge-v-2b/30c2bc691c9d46433abfd450e04441458d503f34/modeling_glm.py:153: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+    /opt/home/k8sworker/.cache/huggingface/modules/transformers_modules/THUDM/glm-edge-v-2b/2053707733f99ab52e943904f43c2359a94301ef/modeling_glm.py:153: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
       rotary_dim = int(q.shape[-1] * partial_rotary_factor)
-    /opt/home/k8sworker/ci-ai/cibuilds/jobs/ov-notebook/jobs/OVNotebookOps/builds/835/archive/.workspace/scm/ov-notebook/.venv/lib/python3.8/site-packages/transformers/cache_utils.py:443: TracerWarning: Using len to get tensor shape might cause the trace to be incorrect. Recommended usage would be tensor.shape[0]. Passing a tensor of different shape might lead to errors or silently give incorrect results.
+    /opt/home/k8sworker/ci-ai/cibuilds/jobs/ov-notebook/jobs/OVNotebookOps/builds/859/archive/.workspace/scm/ov-notebook/.venv/lib/python3.8/site-packages/transformers/cache_utils.py:443: TracerWarning: Using len to get tensor shape might cause the trace to be incorrect. Recommended usage would be tensor.shape[0]. Passing a tensor of different shape might lead to errors or silently give incorrect results.
       elif len(self.key_cache[layer_idx]) == 0:  # fills previously skipped layers; checking for tensor causes errors
-    /opt/home/k8sworker/.cache/huggingface/modules/transformers_modules/THUDM/glm-edge-v-2b/30c2bc691c9d46433abfd450e04441458d503f34/modeling_glm.py:249: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+    /opt/home/k8sworker/.cache/huggingface/modules/transformers_modules/THUDM/glm-edge-v-2b/2053707733f99ab52e943904f43c2359a94301ef/modeling_glm.py:249: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
       if attn_output.size() != (bsz, self.num_heads, q_len, self.head_dim):
-    /opt/home/k8sworker/ci-ai/cibuilds/jobs/ov-notebook/jobs/OVNotebookOps/builds/835/archive/.workspace/scm/ov-notebook/.venv/lib/python3.8/site-packages/torch/jit/_trace.py:168: UserWarning: The .grad attribute of a Tensor that is not a leaf Tensor is being accessed. Its .grad attribute won't be populated during autograd.backward(). If you indeed want the .grad field to be populated for a non-leaf Tensor, use .retain_grad() on the non-leaf Tensor. If you access the non-leaf Tensor by mistake, make sure you access the leaf Tensor instead. See github.com/pytorch/pytorch/pull/30531 for more informations. (Triggered internally at aten/src/ATen/core/TensorBody.h:489.)
+    /opt/home/k8sworker/ci-ai/cibuilds/jobs/ov-notebook/jobs/OVNotebookOps/builds/859/archive/.workspace/scm/ov-notebook/.venv/lib/python3.8/site-packages/torch/jit/_trace.py:168: UserWarning: The .grad attribute of a Tensor that is not a leaf Tensor is being accessed. Its .grad attribute won't be populated during autograd.backward(). If you indeed want the .grad field to be populated for a non-leaf Tensor, use .retain_grad() on the non-leaf Tensor. If you access the non-leaf Tensor by mistake, make sure you access the leaf Tensor instead. See github.com/pytorch/pytorch/pull/30531 for more informations. (Triggered internally at aten/src/ATen/core/TensorBody.h:489.)
       if a.grad is not None:
 
 
@@ -398,9 +396,9 @@ Select inference device
 .. code:: ipython3
 
     from notebook_utils import device_widget
-
+    
     device = device_widget(default="AUTO", exclude=["NPU"])
-
+    
     device
 
 
@@ -424,19 +422,19 @@ running model we will use ``generate`` method.
 .. code:: ipython3
 
     from glmv_helper import OvGLMv
-
+    
     model = OvGLMv(out_dir, device.value)
 
 .. code:: ipython3
 
     import requests
     from PIL import Image
-
+    
     url = "https://github.com/openvinotoolkit/openvino_notebooks/assets/29454499/d5fbbd1a-d484-415c-88cb-9986625b7b11"
     image = Image.open(requests.get(url, stream=True).raw)
-
+    
     query = "Please describe this picture"
-
+    
     print(f"Question:\n {query}")
     image
 
@@ -457,9 +455,9 @@ running model we will use ``generate`` method.
 
     from transformers import TextStreamer, AutoImageProcessor, AutoTokenizer
     import torch
-
+    
     messages = [{"role": "user", "content": [{"type": "image"}, {"type": "text", "text": query}]}]
-
+    
     processor = AutoImageProcessor.from_pretrained(out_dir, trust_remote_code=True)
     tokenizer = AutoTokenizer.from_pretrained(out_dir, trust_remote_code=True)
     inputs = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_dict=True, tokenize=True, return_tensors="pt").to("cpu")
@@ -471,7 +469,7 @@ running model we will use ``generate`` method.
         "top_k": 20,
         "streamer": TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True),
     }
-
+    
     print("Answer:")
     output = model.generate(**generate_kwargs)
 
@@ -479,7 +477,9 @@ running model we will use ``generate`` method.
 .. parsed-literal::
 
     Answer:
-    The image depicts a cat resting inside a cardboard box placed on a soft carpeted floor. The cat is lying with its head towards the bottom of the box, and its front paws are stretched out with the right one slightly forward, while its back and hind legs are positioned in the box. The box appears to be in partial disassembly, with the flaps folded down and one side raised slightly off the ground. The cat's fur is well-groomed and
+    This image captures the adorable and relaxed pose of a cat resting inside an open cardboard box. The cat has chosen to sleep upside down, which provides an interesting perspective of its face. The box is situated on a carpeted floor, with part of a couch visible in the upper left part of the image, suggesting a cozy indoor environment.
+    
+    The backdrop consists of a window with white curtains that hint at natural light coming through, adding to the overall sense
 
 
 Interactive demo
@@ -490,9 +490,9 @@ Interactive demo
 .. code:: ipython3
 
     from gradio_helper import make_demo
-
+    
     demo = make_demo(model, processor, tokenizer)
-
+    
     try:
         demo.launch(debug=False, height=600)
     except Exception:
@@ -505,7 +505,7 @@ Interactive demo
 .. parsed-literal::
 
     Running on local URL:  http://127.0.0.1:7860
-
+    
     To create a public link, set `share=True` in `launch()`.
 
 

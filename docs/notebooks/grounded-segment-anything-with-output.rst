@@ -64,7 +64,9 @@ Clone repositories and install requirements
 
 .. parsed-literal::
 
-    WARNING: supervision 0.25.0 does not provide the extra 'desktop'
+    WARNING: supervision 0.25.1 does not provide the extra 'desktop'
+    ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+    tensorflow 2.12.0 requires numpy<1.24,>=1.22, but you have numpy 1.24.4 which is incompatible.
     Note: you may need to restart the kernel to use updated packages.
 
 
@@ -221,10 +223,10 @@ GroundingDINO imports
 
 .. parsed-literal::
 
-    2024-12-10 01:55:01.921329: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
-    2024-12-10 01:55:01.957327: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+    2025-01-11 02:41:01.997374: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+    2025-01-11 02:41:02.033179: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
     To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-    2024-12-10 01:55:02.563186: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+    2025-01-11 02:41:02.592005: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
     FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
     UserWarning: Failed to load custom C++ ops. Running on CPU mode Only!
 

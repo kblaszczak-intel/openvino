@@ -91,6 +91,10 @@ Prerequisites
     %pip install -q "nncf>=2.6.0" "jiwer"
     
     import requests
+    import platform
+    
+    if platform.system() == "Darwin":
+        %pip install -q "numpy<2.0.0"
     
     r = requests.get(
         url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/notebook_utils.py",
@@ -467,6 +471,7 @@ seconds is optimal. To activate batching, pass the argument batch_size.
 .. code:: ipython3
 
     from transformers import pipeline
+    import torch
     
     ov_model.generation_config = pt_model.generation_config
     
@@ -478,6 +483,7 @@ seconds is optimal. To activate batching, pass the argument batch_size.
         max_new_tokens=128,
         chunk_length_s=15,
         batch_size=16,
+        device=torch.device("cpu"),
     )
 
 
@@ -1029,6 +1035,7 @@ recognition. Multilingual support will be provided later.
         max_new_tokens=128,
         chunk_length_s=15,
         generate_kwargs=generate_kwargs,
+        device=torch.device("cpu"),
     )
     ov_pipe_forward = ov_pipe._forward
     
@@ -1042,6 +1049,7 @@ recognition. Multilingual support will be provided later.
             max_new_tokens=128,
             chunk_length_s=15,
             generate_kwargs=generate_kwargs,
+            device=torch.device("cpu"),
         )
         ov_quantized_pipe_forward = ov_quantized_pipe._forward
     

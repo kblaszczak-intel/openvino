@@ -235,8 +235,10 @@ Install required packages
 
 .. code:: ipython3
 
-    %pip install -q "torch" transformers "diffusers>=0.24.0" "controlnet-aux>=0.0.6" "peft>=0.6.2" accelerate --extra-index-url https://download.pytorch.org/whl/cpu
+    %pip install -q "torch" einops torchvision transformers "diffusers>=0.24.0" timm "peft>=0.6.2" accelerate --extra-index-url https://download.pytorch.org/whl/cpu
     %pip install -q "openvino>=2023.2.0" pillow "gradio>=4.19" "datasets>=2.14.6" "nncf>=2.7.0" "matplotlib>=3.4"
+    %pip install -q -no-deps "controlnet-aux>=0.0.6"
+    %pip install -q scipy opencv-python filelock scikit-image
 
 Prepare PyTorch models
 

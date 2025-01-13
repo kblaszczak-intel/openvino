@@ -72,7 +72,7 @@ Install necessary packages
 .. code:: ipython3
 
     %pip install -q "transformers>=4.25.1" torch accelerate "gradio>4.19" "datasets>=2.14.6" "matplotlib>=3.4" diffusers pillow opencv-python --extra-index-url https://download.pytorch.org/whl/cpu
-    %pip install -q "openvino>=2023.1.0"
+    %pip install -q "openvino>=2024.3.0"
 
 Create Pytorch Models pipeline
 ------------------------------
