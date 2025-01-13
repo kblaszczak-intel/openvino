@@ -73,24 +73,24 @@ install required packages and setup helper functions.
 .. parsed-literal::
 
       error: subprocess-exited-with-error
-      
+
       × Preparing metadata (pyproject.toml) did not run successfully.
       │ exit code: 1
       ╰─> [6 lines of output]
-          
+
           Cargo, the Rust package manager, is not installed or is not on PATH.
           This package requires Rust and Cargo to compile extensions. Install it through
           the system's package manager or via https://rustup.rs/
-          
+
           Checking for Rust toolchain....
           [end of output]
-      
+
       note: This error originates from a subprocess, and is likely not a problem with pip.
     error: metadata-generation-failed
-    
+
     × Encountered error while generating package metadata.
     ╰─> See above for output.
-    
+
     note: This is an issue with the package mentioned above, not pip.
     hint: See above for details.
     Note: you may need to restart the kernel to use updated packages.
@@ -100,16 +100,16 @@ install required packages and setup helper functions.
 
     import requests
     from pathlib import Path
-    
+
     if not Path("glmv_helper.py").exists():
         r = requests.get(url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/notebooks/glm-edge-v/glmv_helper.py")
         open("glmv_helper.py", "w").write(r.text)
-    
-    
+
+
     if not Path("gradio_helper.py").exists():
         r = requests.get(url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/notebooks/glm-edge-v/gradio_helper.py")
         open("gradio_helper.py", "w").write(r.text)
-    
+
     if not Path("notebook_utils.py").exists():
         r = requests.get(url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/notebook_utils.py")
         open("notebook_utils.py", "w").write(r.text)
@@ -120,28 +120,29 @@ Select Model
 
 
 The tutorial supports the following models from GLM-Edge-V model family:
-- `glm-edge-v-2b <https://huggingface.co/THUDM/glm-edge-v-2b>`__ -
-`glm-edge-v-5b <https://huggingface.co/THUDM/glm-edge-v-5b>`__
+
+- `glm-edge-v-2b <https://huggingface.co/THUDM/glm-edge-v-2b>`__
+- `glm-edge-v-5b <https://huggingface.co/THUDM/glm-edge-v-5b>`__
 
 You can select one from the provided options below.
 
 .. code:: ipython3
 
     import ipywidgets as widgets
-    
+
     # Select model
     model_ids = [
         "THUDM/glm-edge-v-2b",
         "THUDM/glm-edge-v-5b",
     ]
-    
+
     model_dropdown = widgets.Dropdown(
         options=model_ids,
         value=model_ids[0],
         description="Model:",
         disabled=False,
     )
-    
+
     model_dropdown
 
 
@@ -260,8 +261,8 @@ documentation <https://docs.openvino.ai/2024/openvino-workflow/model-optimizatio
     from pathlib import Path
     import nncf
     from glmv_helper import convert_glmv_model
-    
-    
+
+
     model_id = model_dropdown.value
     out_dir = Path("model") / Path(model_id).name / "INT4"
     compression_configuration = {
@@ -396,9 +397,9 @@ Select inference device
 .. code:: ipython3
 
     from notebook_utils import device_widget
-    
+
     device = device_widget(default="AUTO", exclude=["NPU"])
-    
+
     device
 
 
@@ -422,19 +423,19 @@ running model we will use ``generate`` method.
 .. code:: ipython3
 
     from glmv_helper import OvGLMv
-    
+
     model = OvGLMv(out_dir, device.value)
 
 .. code:: ipython3
 
     import requests
     from PIL import Image
-    
+
     url = "https://github.com/openvinotoolkit/openvino_notebooks/assets/29454499/d5fbbd1a-d484-415c-88cb-9986625b7b11"
     image = Image.open(requests.get(url, stream=True).raw)
-    
+
     query = "Please describe this picture"
-    
+
     print(f"Question:\n {query}")
     image
 
@@ -455,9 +456,9 @@ running model we will use ``generate`` method.
 
     from transformers import TextStreamer, AutoImageProcessor, AutoTokenizer
     import torch
-    
+
     messages = [{"role": "user", "content": [{"type": "image"}, {"type": "text", "text": query}]}]
-    
+
     processor = AutoImageProcessor.from_pretrained(out_dir, trust_remote_code=True)
     tokenizer = AutoTokenizer.from_pretrained(out_dir, trust_remote_code=True)
     inputs = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_dict=True, tokenize=True, return_tensors="pt").to("cpu")
@@ -469,7 +470,7 @@ running model we will use ``generate`` method.
         "top_k": 20,
         "streamer": TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True),
     }
-    
+
     print("Answer:")
     output = model.generate(**generate_kwargs)
 
@@ -478,7 +479,7 @@ running model we will use ``generate`` method.
 
     Answer:
     This image captures the adorable and relaxed pose of a cat resting inside an open cardboard box. The cat has chosen to sleep upside down, which provides an interesting perspective of its face. The box is situated on a carpeted floor, with part of a couch visible in the upper left part of the image, suggesting a cozy indoor environment.
-    
+
     The backdrop consists of a window with white curtains that hint at natural light coming through, adding to the overall sense
 
 
@@ -490,9 +491,9 @@ Interactive demo
 .. code:: ipython3
 
     from gradio_helper import make_demo
-    
+
     demo = make_demo(model, processor, tokenizer)
-    
+
     try:
         demo.launch(debug=False, height=600)
     except Exception:
@@ -505,7 +506,7 @@ Interactive demo
 .. parsed-literal::
 
     Running on local URL:  http://127.0.0.1:7860
-    
+
     To create a public link, set `share=True` in `launch()`.
 
 

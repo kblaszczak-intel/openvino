@@ -72,9 +72,9 @@ Prerequisites
     import os
     from pathlib import Path
     import requests
-    
+
     os.environ["GIT_CLONE_PROTECTION_ACTIVE"] = "false"
-    
+
     %pip install -Uq pip
     %pip uninstall -q -y optimum optimum-intel
     %pip install --pre -Uq "openvino>=2024.2.0" openvino-tokenizers[transformers] --extra-index-url https://storage.openvinotoolkit.org/simple/wheels/nightly
@@ -86,9 +86,9 @@ Prerequisites
     %pip install -q --extra-index-url https://download.pytorch.org/whl/cpu \
     "git+https://github.com/huggingface/optimum-intel.git" \
     "git+https://github.com/openvinotoolkit/nncf.git"
-    
+
     utility_files = ["notebook_utils.py", "cmd_helper.py"]
-    
+
     for utility in utility_files:
         local_path = Path(utility)
         if not local_path.exists():
@@ -127,8 +127,8 @@ information of current weather.
 .. code:: ipython3
 
     import json
-    
-    
+
+
     def get_current_weather(location, unit="fahrenheit"):
         """Get the current weather in a given location"""
         if "tokyo" in location.lower():
@@ -193,10 +193,10 @@ folder.
 
     from pathlib import Path
     from cmd_helper import optimum_cli
-    
+
     model_id = "Qwen/Qwen2-7B-Instruct"
     model_path = "Qwen2-7B-Instruct-ov"
-    
+
     if not Path(model_path).exists():
         optimum_cli(model_id, model_path, additional_args={"task": "text-generation-with-past", "trust-remote-code": "", "weight-format": "int4", "ratio": "0.72"})
 
@@ -208,7 +208,7 @@ Select inference device for LLM
 .. code:: ipython3
 
     from notebook_utils import device_widget
-    
+
     device = device_widget("CPU", ["NPU"])
 
 
@@ -232,12 +232,12 @@ pipeline.
 .. code:: ipython3
 
     from qwen_agent.llm import get_chat_model
-    
+
     import openvino.properties as props
     import openvino.properties.hint as hints
     import openvino.properties.streams as streams
-    
-    
+
+
     ov_config = {hints.performance_mode(): hints.PerformanceMode.LATENCY, streams.num(): "1", props.cache_dir(): ""}
     llm_cfg = {
         "ov_model_dir": model_path,
@@ -311,10 +311,10 @@ A typical multi-turn dialogue structure is as follows:
     print("# User question:")
     messages = [{"role": "user", "content": "What's the weather like in San Francisco?"}]
     print(messages)
-    
+
     print("# Assistant Response 1:")
     responses = []
-    
+
     # Step 1: Role `user` sending the request
     responses = llm.chat(
         messages=messages,
@@ -322,9 +322,9 @@ A typical multi-turn dialogue structure is as follows:
         stream=False,
     )
     print(responses)
-    
+
     messages.extend(responses)
-    
+
     # Step 2: check if the model wanted to call a function, and call the function if needed
     last_response = messages[-1]
     if last_response.get("function_call", None):
@@ -339,7 +339,7 @@ A typical multi-turn dialogue structure is as follows:
         )
         print("# Function Response:")
         print(function_response)
-    
+
         # Step 3: Get the observation from `function`'s results
         messages.append(
             {
@@ -348,7 +348,7 @@ A typical multi-turn dialogue structure is as follows:
                 "content": function_response,
             }
         )
-    
+
         print("# Assistant Response 2:")
         # Step 4: Consolidate the observation from function into final response
         responses = llm.chat(
@@ -394,13 +394,14 @@ For example, to register your own image generation tool:
    unique identifier for the tool.
 -  Implement the ``call(...)`` function.
 
-In this notebook, we will create 3 tools as examples: -
-**image_generation**: AI painting (image generation) service, input text
-description, and return the image URL drawn based on text information. -
-**get_current_weather**: Get the current weather in a given city name. -
-**wikipedia**: A wrapper around Wikipedia. Useful for when you need to
-answer general questions about people, places, companies, facts,
-historical events, or other subjects.
+In this notebook, we will create 3 tools as examples:
+
+- **image_generation**: AI painting (image generation) service, input text
+  description, and return the image URL drawn based on text information.
+- **get_current_weather**: Get the current weather in a given city name.
+- **wikipedia**: A wrapper around Wikipedia. Useful for when you need to
+  answer general questions about people, places, companies, facts,
+  historical events, or other subjects.
 
 .. code:: ipython3
 
@@ -408,24 +409,24 @@ historical events, or other subjects.
     import json5
     import requests
     from qwen_agent.tools.base import BaseTool, register_tool
-    
-    
+
+
     @register_tool("image_generation")
     class ImageGeneration(BaseTool):
         description = "AI painting (image generation) service, input text description, and return the image URL drawn based on text information."
         parameters = [{"name": "prompt", "type": "string", "description": "Detailed description of the desired image content, in English", "required": True}]
-    
+
         def call(self, params: str, **kwargs) -> str:
             prompt = json5.loads(params)["prompt"]
             prompt = urllib.parse.quote(prompt)
             return json5.dumps({"image_url": f"https://image.pollinations.ai/prompt/{prompt}"}, ensure_ascii=False)
-    
-    
+
+
     @register_tool("get_current_weather")
     class GetCurrentWeather(BaseTool):
         description = "Get the current weather in a given city name."
         parameters = [{"name": "city_name", "type": "string", "description": "The city and state, e.g. San Francisco, CA", "required": True}]
-    
+
         def call(self, params: str, **kwargs) -> str:
             # `params` are the arguments generated by the LLM agent.
             city_name = json5.loads(params)["city_name"]
@@ -443,18 +444,18 @@ historical events, or other subjects.
             resp = resp.json()
             ret = {k: {_v: resp[k][0][_v] for _v in v} for k, v in key_selection.items()}
             return str(ret)
-    
-    
+
+
     @register_tool("wikipedia")
     class Wikipedia(BaseTool):
         description = "A wrapper around Wikipedia. Useful for when you need to answer general questions about people, places, companies, facts, historical events, or other subjects."
         parameters = [{"name": "query", "type": "string", "description": "Query to look up on wikipedia", "required": True}]
-    
+
         def call(self, params: str, **kwargs) -> str:
             # `params` are the arguments generated by the LLM agent.
             from langchain.tools import WikipediaQueryRun
             from langchain_community.utilities import WikipediaAPIWrapper
-    
+
             query = json5.loads(params)["query"]
             wikipedia = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper(top_k_results=2, doc_content_chars_max=1000))
             resutlt = wikipedia.run(query)
@@ -487,7 +488,7 @@ tasks. Features:
 .. code:: ipython3
 
     from qwen_agent.agents import Assistant
-    
+
     bot = Assistant(llm=llm_cfg, function_list=tools, name="OpenVINO Agent")
 
 
@@ -502,11 +503,11 @@ tasks. Features:
     if not Path("gradio_helper.py").exists():
         r = requests.get(url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/notebooks/llm-agent-functioncall/gradio_helper.py")
         open("gradio_helper.py", "w").write(r.text)
-    
+
     from gradio_helper import make_demo
-    
+
     demo = make_demo(bot=bot)
-    
+
     try:
         demo.run()
     except Exception:

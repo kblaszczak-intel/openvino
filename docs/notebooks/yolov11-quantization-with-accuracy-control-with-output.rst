@@ -106,7 +106,7 @@ we do not need to do these steps manually.
 
     import os
     from pathlib import Path
-    
+
     from ultralytics import YOLO
     from ultralytics.cfg import get_cfg
     from ultralytics.data.utils import check_det_dataset
@@ -114,11 +114,11 @@ we do not need to do these steps manually.
     from ultralytics.utils import DEFAULT_CFG
     from ultralytics.utils import ops
     from ultralytics.utils.metrics import ConfusionMatrix
-    
+
     ROOT = os.path.abspath("")
-    
+
     MODEL_NAME = "yolo11n-seg"
-    
+
     model = YOLO(f"{ROOT}/{MODEL_NAME}.pt")
     args = get_cfg(cfg=DEFAULT_CFG)
     args.data = "coco128-seg.yaml"
@@ -127,32 +127,32 @@ we do not need to do these steps manually.
 
     # Fetch the notebook utils script from the openvino_notebooks repo
     import requests
-    
+
     r = requests.get(
         url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/notebook_utils.py",
     )
-    
+
     open("notebook_utils.py", "w").write(r.text)
-    
+
     from notebook_utils import download_file, device_widget
 
 .. code:: ipython3
 
     from zipfile import ZipFile
-    
+
     from ultralytics.data.utils import DATASETS_DIR
-    
+
     DATA_URL = "https://www.ultralytics.com/assets/coco128-seg.zip"
     CFG_URL = "https://raw.githubusercontent.com/ultralytics/ultralytics/v8.1.0/ultralytics/cfg/datasets/coco.yaml"
-    
+
     OUT_DIR = DATASETS_DIR
-    
+
     DATA_PATH = OUT_DIR / "coco128-seg.zip"
     CFG_PATH = OUT_DIR / "coco128-seg.yaml"
-    
+
     download_file(DATA_URL, DATA_PATH.name, DATA_PATH.parent)
     download_file(CFG_URL, CFG_PATH.name, CFG_PATH.parent)
-    
+
     if not (OUT_DIR / "coco128/labels").exists():
         with ZipFile(DATA_PATH, "r") as zip_ref:
             zip_ref.extractall(OUT_DIR)
@@ -162,12 +162,12 @@ Load model.
 .. code:: ipython3
 
     import openvino as ov
-    
-    
+
+
     model_path = Path(f"{ROOT}/{MODEL_NAME}_openvino_model/{MODEL_NAME}.xml")
     if not model_path.exists():
         model.export(format="openvino", dynamic=True, half=False)
-    
+
     ov_model = ov.Core().read_model(model_path)
 
 
@@ -175,16 +175,16 @@ Load model.
 
     Ultralytics 8.3.0 🚀 Python-3.10.12 torch-2.5.1+cpu CPU (Intel Core(TM) i9-10980XE 3.00GHz)
     YOLO11n-seg summary (fused): 265 layers, 2,868,664 parameters, 0 gradients, 10.4 GFLOPs
-    
+
     PyTorch: starting from '/home/maleksandr/test_notebooks/yolo/openvino_notebooks/notebooks/quantizing-model-with-accuracy-control/yolo11n-seg.pt' with input shape (1, 3, 640, 640) BCHW and output shape(s) ((1, 116, 8400), (1, 32, 160, 160)) (5.9 MB)
-    
+
     OpenVINO: starting export with openvino 2024.4.0-16579-c3152d32c9c-releases/2024/4...
     OpenVINO: export success ✅ 2.3s, saved as '/home/maleksandr/test_notebooks/yolo/openvino_notebooks/notebooks/quantizing-model-with-accuracy-control/yolo11n-seg_openvino_model/' (11.3 MB)
-    
+
     Export complete (2.6s)
     Results saved to /home/maleksandr/test_notebooks/yolo/openvino_notebooks/notebooks/quantizing-model-with-accuracy-control
-    Predict:         yolo predict task=segment model=/home/maleksandr/test_notebooks/yolo/openvino_notebooks/notebooks/quantizing-model-with-accuracy-control/yolo11n-seg_openvino_model imgsz=640  
-    Validate:        yolo val task=segment model=/home/maleksandr/test_notebooks/yolo/openvino_notebooks/notebooks/quantizing-model-with-accuracy-control/yolo11n-seg_openvino_model imgsz=640 data=/ultralytics/ultralytics/cfg/datasets/coco.yaml  
+    Predict:         yolo predict task=segment model=/home/maleksandr/test_notebooks/yolo/openvino_notebooks/notebooks/quantizing-model-with-accuracy-control/yolo11n-seg_openvino_model imgsz=640
+    Validate:        yolo val task=segment model=/home/maleksandr/test_notebooks/yolo/openvino_notebooks/notebooks/quantizing-model-with-accuracy-control/yolo11n-seg_openvino_model imgsz=640 data=/ultralytics/ultralytics/cfg/datasets/coco.yaml
     Visualize:       https://netron.app
 
 
@@ -206,13 +206,13 @@ validator class instance.
 .. code:: ipython3
 
     from ultralytics.data.converter import coco80_to_coco91_class
-    
-    
+
+
     validator = model.task_map[model.task]["validator"](args=args)
     validator.data = check_det_dataset(args.data)
     validator.stride = 3
     data_loader = validator.get_dataloader(OUT_DIR / "coco128-seg", 1)
-    
+
     validator.is_coco = True
     validator.class_map = coco80_to_coco91_class()
     validator.names = model.model.names
@@ -233,15 +233,15 @@ We can use one dataset as calibration and validation datasets. Name it
 .. code:: ipython3
 
     from typing import Dict
-    
+
     import nncf
-    
-    
+
+
     def transform_fn(data_item: Dict):
         input_tensor = validator.preprocess(data_item)["img"].numpy()
         return input_tensor
-    
-    
+
+
     quantization_dataset = nncf.Dataset(data_loader, transform_fn)
 
 
@@ -258,11 +258,11 @@ Prepare validation function
 .. code:: ipython3
 
     from functools import partial
-    
+
     import torch
     from nncf.quantization.advanced_parameters import AdvancedAccuracyRestorerParameters
-    
-    
+
+
     def validation_ac(
         compiled_model: ov.CompiledModel,
         validation_loader: torch.utils.data.DataLoader,
@@ -276,7 +276,7 @@ Prepare validation function
         validator.batch_i = 1
         validator.confusion_matrix = ConfusionMatrix(nc=validator.nc)
         num_outputs = len(compiled_model.outputs)
-    
+
         counter = 0
         for batch_i, batch in enumerate(validation_loader):
             if num_samples is not None and batch_i == num_samples:
@@ -300,10 +300,10 @@ Prepare validation function
             stats_metrics = stats["metrics/mAP50-95(M)"]
         if log:
             print(f"Validate: dataset length = {counter}, metric value = {stats_metrics:.3f}")
-    
+
         return stats_metrics
-    
-    
+
+
     validation_fn = partial(validation_ac, validator=validator, log=False)
 
 Run quantization with accuracy control
@@ -312,17 +312,20 @@ Run quantization with accuracy control
 
 
 You should provide the calibration dataset and the validation dataset.
-It can be the same dataset. - parameter ``max_drop`` defines the
-accuracy drop threshold. The quantization process stops when the
-degradation of accuracy metric on the validation dataset is less than
-the ``max_drop``. The default value is 0.01. NNCF will stop the
-quantization and report an error if the ``max_drop`` value can’t be
-reached. - ``drop_type`` defines how the accuracy drop will be
-calculated: ABSOLUTE (used by default) or RELATIVE. -
-``ranking_subset_size`` - size of a subset that is used to rank layers
-by their contribution to the accuracy drop. Default value is 300, and
-the more samples it has the better ranking, potentially. Here we use the
-value 25 to speed up the execution.
+It can be the same dataset.
+
+- parameter ``max_drop`` defines the
+  accuracy drop threshold. The quantization process stops when the
+  degradation of accuracy metric on the validation dataset is less than
+  the ``max_drop``. The default value is 0.01. NNCF will stop the
+  quantization and report an error if the ``max_drop`` value can’t be
+  reached.
+- ``drop_type`` defines how the accuracy drop will be
+  calculated: ABSOLUTE (used by default) or RELATIVE.
+- ``ranking_subset_size`` - size of a subset that is used to rank layers
+  by their contribution to the accuracy drop. Default value is 300, and
+  the more samples it has the better ranking, potentially. Here we use the
+  value 25 to speed up the execution.
 
    **NOTE**: Execution can take tens of minutes and requires up to 15 GB
    of free memory
@@ -405,10 +408,10 @@ value 25 to speed up the execution.
 
     INFO:nncf:Elapsed Time: 00:02:11
     INFO:nncf:Changing the scope of quantizer nodes was started
-    INFO:nncf:Reverted 1 operations to the floating-point precision: 
+    INFO:nncf:Reverted 1 operations to the floating-point precision:
     	__module.model.23/aten::mul/Multiply_3
     INFO:nncf:Accuracy drop with the new quantization scope is 0.016468171203124993 (absolute)
-    INFO:nncf:Reverted 1 operations to the floating-point precision: 
+    INFO:nncf:Reverted 1 operations to the floating-point precision:
     	__module.model.0.conv/aten::_convolution/Convolution
     INFO:nncf:Accuracy drop with the new quantization scope is 0.01663718104550027 (absolute)
     INFO:nncf:Re-calculating ranking scores for remaining groups
@@ -430,7 +433,7 @@ value 25 to speed up the execution.
 .. parsed-literal::
 
     INFO:nncf:Elapsed Time: 00:02:07
-    INFO:nncf:Reverted 2 operations to the floating-point precision: 
+    INFO:nncf:Reverted 2 operations to the floating-point precision:
     	__module.model.23/aten::sub/Subtract_1
     	__module.model.23/aten::add/Add_7
     INFO:nncf:Algorithm completed: achieved required accuracy drop 0.006520879829061188 (absolute)
@@ -452,7 +455,7 @@ is not exceeded.
 .. code:: ipython3
 
     device = device_widget()
-    
+
     device
 
 
@@ -474,11 +477,11 @@ is not exceeded.
         ov_config = {"GPU_DISABLE_WINOGRAD_CONVOLUTION": "YES"}
     quantized_compiled_model = core.compile_model(quantized_model, device.value, ov_config)
     compiled_ov_model = core.compile_model(ov_model, device.value, ov_config)
-    
+
     pt_result = validation_ac(compiled_ov_model, data_loader, validator)
     quantized_result = validation_ac(quantized_compiled_model, data_loader, validator)
-    
-    
+
+
     print(f"[Original OpenVINO]: {pt_result:.4f}")
     print(f"[Quantized OpenVINO]: {quantized_result:.4f}")
 
@@ -496,14 +499,14 @@ And compare performance.
 .. code:: ipython3
 
     from pathlib import Path
-    
+
     # Set model directory
     MODEL_DIR = Path("model")
     MODEL_DIR.mkdir(exist_ok=True)
-    
+
     ir_model_path = MODEL_DIR / "ir_model.xml"
     quantized_model_path = MODEL_DIR / "quantized_model.xml"
-    
+
     # Save models to use them in the commandline banchmark app
     ov.save_model(ov_model, ir_model_path, compress_to_fp16=False)
     ov.save_model(quantized_model, quantized_model_path, compress_to_fp16=False)
@@ -522,12 +525,12 @@ And compare performance.
     [ WARNING ] Default duration 120 seconds is used for unknown device AUTO
     [ INFO ] OpenVINO:
     [ INFO ] Build ................................. 2024.4.0-16579-c3152d32c9c-releases/2024/4
-    [ INFO ] 
+    [ INFO ]
     [ INFO ] Device info:
     [ INFO ] AUTO
     [ INFO ] Build ................................. 2024.4.0-16579-c3152d32c9c-releases/2024/4
-    [ INFO ] 
-    [ INFO ] 
+    [ INFO ]
+    [ INFO ]
     [Step 3/11] Setting device configuration
     [ WARNING ] Performance hint was not explicitly specified in command line. Device(AUTO) performance hint will be set to PerformanceMode.THROUGHPUT.
     [Step 4/11] Reading model files
@@ -584,7 +587,7 @@ And compare performance.
     [ INFO ]   PERF_COUNT: False
     [Step 9/11] Creating infer requests and preparing input tensors
     [ WARNING ] No input files were given for input 'x'!. This input will be filled with random values!
-    [ INFO ] Fill input 'x' with random values 
+    [ INFO ] Fill input 'x' with random values
     [Step 10/11] Measuring performance (Start inference asynchronously, 12 inference requests, limits: 120000 ms duration)
     [ INFO ] Benchmarking in inference only mode (inputs filling are not included in measurement loop).
     [ INFO ] First inference took 45.30 ms
@@ -614,12 +617,12 @@ And compare performance.
     [ WARNING ] Default duration 120 seconds is used for unknown device AUTO
     [ INFO ] OpenVINO:
     [ INFO ] Build ................................. 2024.4.0-16579-c3152d32c9c-releases/2024/4
-    [ INFO ] 
+    [ INFO ]
     [ INFO ] Device info:
     [ INFO ] AUTO
     [ INFO ] Build ................................. 2024.4.0-16579-c3152d32c9c-releases/2024/4
-    [ INFO ] 
-    [ INFO ] 
+    [ INFO ]
+    [ INFO ]
     [Step 3/11] Setting device configuration
     [ WARNING ] Performance hint was not explicitly specified in command line. Device(AUTO) performance hint will be set to PerformanceMode.THROUGHPUT.
     [Step 4/11] Reading model files
@@ -676,7 +679,7 @@ And compare performance.
     [ INFO ]   PERF_COUNT: False
     [Step 9/11] Creating infer requests and preparing input tensors
     [ WARNING ] No input files were given for input 'x'!. This input will be filled with random values!
-    [ INFO ] Fill input 'x' with random values 
+    [ INFO ] Fill input 'x' with random values
     [Step 10/11] Measuring performance (Start inference asynchronously, 12 inference requests, limits: 120000 ms duration)
     [ INFO ] Benchmarking in inference only mode (inputs filling are not included in measurement loop).
     [ INFO ] First inference took 33.20 ms
