@@ -427,7 +427,7 @@ semantic features are extracted through the CLIP image encoder for
 Cross-Attention. Temporal-Attention operates in the temporal dimension.
 Finally, the VAE decoder decodes the result into a video clip.
 
-|image0|
+|image01|
 
 The pipeline contains 6 PyTorch modules:
 
@@ -467,7 +467,7 @@ compression parameters.
 More details about weights compression can be found in `OpenVINO
 documentation <https://docs.openvino.ai/2023.3/weight_compression.html>`__.
 
-.. |image0| image:: https://humanaigc.github.io/animate-anyone/static/images/f2_img.png
+.. |image01| image:: https://humanaigc.github.io/animate-anyone/static/images/f2_img.png
 
 .. code:: ipython3
 

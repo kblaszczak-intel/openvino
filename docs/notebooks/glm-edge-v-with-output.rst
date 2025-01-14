@@ -20,8 +20,9 @@ high speeds on some edge platforms.
 In this tutorial we consider how to launch multimodal model GLM-Edge-V
 using OpenVINO for creation multimodal chatbot. Additionally, we
 optimize model to low precision using
-`NNCF <https://github.com/openvinotoolkit/nncf>`__ #### Table of
-contents:
+`NNCF <https://github.com/openvinotoolkit/nncf>`__
+
+**Table of contents:**
 
 -  `Prerequisites <#prerequisites>`__
 -  `Select Model <#select-model>`__

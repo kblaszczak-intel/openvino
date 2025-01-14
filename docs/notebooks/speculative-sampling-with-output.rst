@@ -97,7 +97,7 @@ First, we should install the `OpenVINO
 GenAI <https://github.com/openvinotoolkit/openvino.genai>`__ for running
 model inference.
 
-|image0|
+|image01|
 
 `OpenVINO™ GenAI <https://github.com/openvinotoolkit/openvino.genai>`__
 is a library of the most popular Generative AI model pipelines,
@@ -110,7 +110,7 @@ resource consumption. It requires no external dependencies to run
 generative models as it already includes all the core functionality
 (e.g. tokenization via openvino-tokenizers).
 
-.. |image0| image:: https://media.githubusercontent.com/media/openvinotoolkit/openvino.genai/refs/heads/master/src/docs/openvino_genai.svg
+.. |image01| image:: https://media.githubusercontent.com/media/openvinotoolkit/openvino.genai/refs/heads/master/src/docs/openvino_genai.svg
 
 .. code:: ipython3
 
@@ -142,13 +142,13 @@ guide <https://docs.openvino.ai/2024/learn-openvino/llm_inference_guide/llm-infe
 
     from pathlib import Path
     import huggingface_hub as hf_hub
-    
+
     draft_model_id = "OpenVINO/Phi-3-mini-FastDraft-50M-int8-ov"
     target_model_id = "OpenVINO/Phi-3-mini-4k-instruct-int4-ov"
-    
+
     draft_model_path = Path(draft_model_id.split("/")[-1])
     target_model_path = Path(target_model_id.split("/")[-1])
-    
+
     if not draft_model_path.exists():
         hf_hub.snapshot_download(draft_model_id, local_dir=draft_model_path)
     if not target_model_path.exists():
@@ -166,16 +166,16 @@ use GPU as target device if it is available.
 .. code:: ipython3
 
     import requests
-    
+
     r = requests.get(
         url="https://raw.githubusercontent.com/openvinotoolkit/openvino_notebooks/latest/utils/notebook_utils.py",
     )
     open("notebook_utils.py", "w").write(r.text)
-    
+
     from notebook_utils import device_widget
-    
+
     device = device_widget(default="CPU", exclude=["NPU", "AUTO"])
-    
+
     device
 
 
@@ -210,13 +210,13 @@ generation is finished, we will write streamer function.
 
     import openvino_genai as ov_genai
     import time
-    
+
     pipe = ov_genai.LLMPipeline(target_model_path, device.value)
-    
+
     config = ov_genai.GenerationConfig()
     config.max_new_tokens = 330
     prompt = '''<s>
-    
+
     def prime_fib(n: int):
         """
         prime_fib returns n-th number that is a Fibonacci number and it's also prime.
@@ -231,15 +231,15 @@ generation is finished, we will write streamer function.
         >>> prime_fib(5)
         89
         """'''
-    
-    
+
+
     def streamer(subword):
         print(subword, end="", flush=True)
         # Return flag corresponds whether generation should be stopped.
         # False means continue generation.
         return False
-    
-    
+
+
     start_time = time.perf_counter()
     pipe.generate(prompt, config, streamer=streamer)
     end_time = time.perf_counter()
@@ -247,7 +247,7 @@ generation is finished, we will write streamer function.
 .. code:: ipython3
 
     import gc
-    
+
     print(f"Generation time: {end_time - start_time:.2f}s")
     del pipe
     gc.collect()
@@ -261,7 +261,7 @@ To enable Speculative decoding in ``LLMPipeline,`` we should
 additionally provide the ``draft_model`` structure and
 ``SchedulerConfig`` for resource management.
 
-|image0|
+|image02|
 
 As shown in the figure above, speculative decoding works by splitting
 the generative process into two stages. In the first stage, a fast, but
@@ -281,7 +281,7 @@ generation config. If the assistant model’s confidence in its prediction
 for the current token is lower than this threshold, the assistant model
 stops the current token generation iteration is not yet reached.
 
-.. |image0| image:: https://github.com/user-attachments/assets/69f5c096-abca-4f97-952b-291c52eb3444
+.. |image02| image:: https://github.com/user-attachments/assets/69f5c096-abca-4f97-952b-291c52eb3444
 
 .. code:: ipython3
 
@@ -290,11 +290,11 @@ stops the current token generation iteration is not yet reached.
     scheduler_config.cache_size = 0
     scheduler_config.num_kv_blocks = 2048 // 8
     scheduler_config.max_num_batched_tokens = 2048
-    
+
     draft_model = ov_genai.draft_model(draft_model_path, device.value)
-    
+
     pipe = ov_genai.LLMPipeline(target_model_path, device.value, draft_model=draft_model, scheduler_config=scheduler_config)
-    
+
     config = ov_genai.GenerationConfig()
     config.max_new_tokens = 330
     config.num_assistant_tokens = 5
@@ -345,9 +345,9 @@ Configure the data type and the number of examples to run:
 .. code:: ipython3
 
     num_samples_to_select = 50
-    
+
     import ipywidgets as widgets
-    
+
     data_options = ["Code", "Text"]
     data_type = widgets.Dropdown(
         options=data_options,
@@ -371,9 +371,9 @@ Load the dataset and prepare the prompts:
 .. code:: ipython3
 
     from datasets import load_dataset
-    
+
     print("loading dataset...")
-    
+
     if data_type.value == "Code":
         ds = load_dataset("openai_humaneval", split="test")
         prompts = ds["prompt"]
@@ -400,13 +400,13 @@ Run auto-regressive generation and get total runtime per example:
     import openvino_genai as ov_genai
     import time
     from tqdm import tqdm
-    
+
     print("Running Auto-Regressive generation...")
     pipe = ov_genai.LLMPipeline(target_model_path, device.value)
-    
+
     config = ov_genai.GenerationConfig()
     config.max_new_tokens = 330
-    
+
     times_auto_regressive = []
     for prompt in tqdm(prompts):
         start_time = time.perf_counter()
@@ -414,9 +414,9 @@ Run auto-regressive generation and get total runtime per example:
         end_time = time.perf_counter()
         times_auto_regressive.append(end_time - start_time)
     print("Done")
-    
+
     import gc
-    
+
     del pipe
     gc.collect()
 
@@ -437,7 +437,7 @@ Run auto-regressive generation and get total runtime per example:
 
 
 
-    
+
 
 
 
@@ -457,16 +457,16 @@ Now run generation with speculative-decoding:
     scheduler_config.cache_size = 0
     scheduler_config.num_kv_blocks = 2048 // 8
     scheduler_config.max_num_batched_tokens = 2048
-    
+
     draft_model = ov_genai.draft_model(draft_model_path, device.value)
-    
+
     pipe = ov_genai.LLMPipeline(target_model_path, device.value, draft_model=draft_model, scheduler_config=scheduler_config)
-    
+
     config = ov_genai.GenerationConfig()
     config.max_new_tokens = 330
     config.num_assistant_tokens = 5
-    
-    
+
+
     times_speculative_decoding = []
     print("Running Speculative Decoding generation...")
     for prompt in tqdm(prompts):
@@ -493,7 +493,7 @@ Now run generation with speculative-decoding:
 
 .. parsed-literal::
 
-    
+
 
 
 Now let’s calculate the speedup:
