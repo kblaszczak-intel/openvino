@@ -4,7 +4,7 @@ OpenVINO Release Notes
 
 .. meta::
    :description: See what has changed in OpenVINO with the latest release, as well as all
-                 previous releases in this year's cycle.
+                 previous releases in this year's cycle. Test change
 
 
 .. toctree::
